@@ -9,6 +9,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 concurrency:
@@ -48,6 +49,28 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: Optics/Grating_Physics/_build/public-pilot/_build/html
+      - name: Wait for Pages artifact metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json, os, time, urllib.request
+          endpoint = (os.environ['GITHUB_API_URL'] + '/repos/' + os.environ['GITHUB_REPOSITORY']
+                      + '/actions/runs/' + os.environ['GITHUB_RUN_ID'] + '/artifacts')
+          request = urllib.request.Request(endpoint, headers={
+              'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+              'Accept': 'application/vnd.github+json'})
+          for attempt in range(12):
+              with urllib.request.urlopen(request, timeout=20) as response:
+                  artifacts = json.load(response)['artifacts']
+              if any(a['name'] == 'github-pages' and not a['expired'] for a in artifacts):
+                  print('Pages artifact metadata is available.')
+                  break
+              print('Waiting for Pages artifact metadata...', flush=True)
+              time.sleep(5)
+          else:
+              raise SystemExit('Uploaded Pages artifact is not visible yet; retry the workflow.')
+          PY
       - name: Deploy pilot
         id: deployment
         uses: actions/deploy-pages@v4

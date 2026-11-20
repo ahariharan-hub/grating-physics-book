@@ -164,7 +164,7 @@ def preview():
         return
     def listening(port):
         try:
-            with socket.create_connection(('127.0.0.1', port), timeout=1):
+            with socket.create_connection(('localhost', port), timeout=1):
                 return True
         except OSError:
             return False
