@@ -45,6 +45,7 @@ jobs:
           python book/check_solutions.py
           python book/check_boundary.py
           python book/check_propagation.py
+          python book/check_scattering.py
       - name: Build public pilot and scan for local credentials
         run: |
           python book/pilot.py build

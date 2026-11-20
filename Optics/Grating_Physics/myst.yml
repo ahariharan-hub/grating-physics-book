@@ -15,6 +15,7 @@ project:
     - file: 0_2_Solutions_of_the_Helmholtz_Equation.ipynb
     - file: 0_3_Boundary_Conditions_and_Diffraction.ipynb
     - file: 0_4_Propagation_of_Scalar_Optical_Fields.ipynb
+    - file: 0_5_From_Helmholtz_BVP_to_Diffracted_Field.ipynb
 
 site:
   template: book-theme
