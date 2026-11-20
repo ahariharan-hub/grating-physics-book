@@ -1,0 +1,51 @@
+name: Grating Physics pilot
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Optics/Grating_Physics/**'
+      - '.github/workflows/grating-book.yml'
+      - '.binder/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: Optics/Grating_Physics
+    env:
+      BASE_URL: /${{ github.event.repository.name }}
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/configure-pages@v5
+      - name: Install tested notebook and book dependencies
+        run: python -m pip install -r book/requirements-tested.txt
+      - name: Execute only notebooks 0.0 and 0.1
+        run: python book/pilot.py execute
+      - name: Build public pilot and scan for local credentials
+        run: |
+          python book/pilot.py build
+          python book/check_build.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: Optics/Grating_Physics/_build/public-pilot/_build/html
+      - name: Deploy pilot
+        id: deployment
+        uses: actions/deploy-pages@v4
