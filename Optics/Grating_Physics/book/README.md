@@ -1,12 +1,12 @@
 # Pilot validation
 
-The book navigation contains only notebooks 0.0 and 0.1. Notebook 0.0 has no
-code cells; all four code cells in 0.1 have passed fresh local execution.
+The book navigation contains only notebooks 0.0, 0.1 and 0.2. Notebook 0.0 has no
+code cells; all eight code cells across 0.1 and 0.2 have passed fresh local execution.
 `requirements-tested.txt` and `tested-environment.json` record the tested
 Python environment. These are top-level pins, not a complete Conda lock.
 
-Five native MyST dropdowns contain parsed mathematical expressions. The
-build validation checks these and verifies the two-page scope. A separate
+Eight native MyST dropdowns contain parsed mathematical expressions. The
+build validation checks these and verifies the three-page scope. A separate
 local kernel protocol check has verified authenticated execution and widget
 trait updates; rendered browser interaction still needs an end-to-end check.
 
@@ -37,3 +37,13 @@ slider interaction remains unverified.
 
 Both downloadable ZIP bundles are directly linked from the pilot and checked
 for archive integrity during the build validation.
+
+## Notebook 0.2 preparation
+
+Notebook 0.2 is included after 0.1. Its four code cells execute without errors,
+and its three Answer dropdowns use native MyST. The radial Helmholtz residual,
+Bessel-cone residual and propagation amplitude change are below 2e-16 in the
+recorded calculation. All eight solution families produce PNG figures; the
+plane/Bessel/Gaussian beam views, Gaussian waist/axial controls and reset pass
+backend callback checks. See `solutions-validation.json`. These checks do not
+verify rendered browser slider interaction.

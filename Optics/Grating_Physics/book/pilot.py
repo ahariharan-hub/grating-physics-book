@@ -1,4 +1,4 @@
-"""Execute and preview the two-notebook pilot without public local credentials.
+"""Execute and preview notebooks 0.0-0.2 without public local credentials.
 
 Run with the grating-book Python: execute, build, or preview. All executed
 notebooks, logs, tokens and local site configuration live under ignored _build.
@@ -19,7 +19,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / '_build'
-PILOT = ('0_0_Foundations_of_Scalar_Optics.ipynb', '0_1_Scalar_Fields_and_Helmholtz.ipynb')
+PILOT = ('0_0_Foundations_of_Scalar_Optics.ipynb',
+         '0_1_Scalar_Fields_and_Helmholtz.ipynb',
+         '0_2_Solutions_of_the_Helmholtz_Equation.ipynb')
 PACKAGES = ('jupyter-book', 'numpy', 'scipy', 'matplotlib', 'plotly', 'ipywidgets',
             'ipykernel', 'jupyter-server', 'jupyter-client', 'nbclient', 'nbformat', 'PyYAML')
 

@@ -1,5 +1,5 @@
 {
-  "pilot_scope": "two pages",
+  "pilot_scope": "3 pages",
   "dropdown_math": [
     {
       "page": "index.json",
@@ -16,6 +16,15 @@
         2,
         2,
         6
+      ]
+    },
+    {
+      "page": "solutions-of-the-helmholtz-equation.json",
+      "dropdowns": 3,
+      "dropdown_math_nodes": [
+        4,
+        1,
+        1
       ]
     }
   ],

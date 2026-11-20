@@ -37,8 +37,10 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Install tested notebook and book dependencies
         run: python -m pip install -r book/requirements-tested.txt
-      - name: Execute only notebooks 0.0 and 0.1
+      - name: Execute notebooks 0.0 through 0.2
         run: python book/pilot.py execute
+      - name: Check solution families and widget callbacks
+        run: python book/check_solutions.py
       - name: Build public pilot and scan for local credentials
         run: |
           python book/pilot.py build

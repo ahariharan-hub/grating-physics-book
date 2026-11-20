@@ -1,0 +1,20 @@
+{
+  "notebook": "0_2_Solutions_of_the_Helmholtz_Equation.ipynb",
+  "radial_residual": 3.2473391145137564e-17,
+  "cone_residual": 1.799825775391955e-16,
+  "propagation_amplitude_change": 5.551115123125783e-17,
+  "solution_families": [
+    "plane",
+    "standing",
+    "spherical",
+    "cylindrical",
+    "bessel",
+    "multipole",
+    "evanescent",
+    "gaussian"
+  ],
+  "beam_views": "passed: plane, bessel, gaussian",
+  "gaussian_controls": "passed",
+  "reset": "passed",
+  "browser_ui": "not covered by this backend callback check"
+}
