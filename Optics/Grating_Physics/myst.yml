@@ -16,6 +16,7 @@ project:
     - file: 0_3_Boundary_Conditions_and_Diffraction.ipynb
     - file: 0_4_Propagation_of_Scalar_Optical_Fields.ipynb
     - file: 0_5_From_Helmholtz_BVP_to_Diffracted_Field.ipynb
+    - file: 0_6_From_Complex_Fields_to_Diffraction_Orders.ipynb
 
 site:
   template: book-theme
