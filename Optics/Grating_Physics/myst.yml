@@ -17,6 +17,7 @@ project:
     - file: 0_4_Propagation_of_Scalar_Optical_Fields.ipynb
     - file: 0_5_From_Helmholtz_BVP_to_Diffracted_Field.ipynb
     - file: 0_6_From_Complex_Fields_to_Diffraction_Orders.ipynb
+    - file: 0_7_Ideal_Binary_Masks_vs_Physical_Gratings.ipynb
 
 site:
   template: book-theme

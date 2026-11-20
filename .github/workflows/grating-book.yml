@@ -47,6 +47,7 @@ jobs:
           python book/check_propagation.py
           python book/check_scattering.py
           python book/check_orders.py
+          python book/check_masks.py
       - name: Build public pilot and scan for local credentials
         run: |
           python book/pilot.py build
