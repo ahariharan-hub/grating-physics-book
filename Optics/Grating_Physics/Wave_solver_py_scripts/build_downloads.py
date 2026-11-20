@@ -3,6 +3,7 @@
 Run this file before building/publishing the book. Archives contain their own
 wave_optics package and exclude environments, caches, tests and notebook outputs.
 Only the standard library is needed to build the archives.
+Text entries use LF line endings so Windows and Linux produce the same bundle.
 """
 from pathlib import Path
 import hashlib
@@ -14,15 +15,19 @@ COLLECTIONS=ROOT/'Wave_solver_py_scripts'
 OUTPUT=ROOT/'downloads'
 
 
+def archive_bytes(path):
+    return path.read_bytes().replace(b'\r\n', b'\n')
+
+
 def build(collection):
     folder=COLLECTIONS/collection
     files=sorted(p for p in folder.rglob('*')
                  if p.is_file() and p.suffix in {'.py','.txt','.md','.json'}
                  and '__pycache__' not in p.parts)
     backend=sorted(p for p in (ROOT/'wave_optics').iterdir() if p.is_file() and p.suffix in {'.py','.md'})
-    entries={f'Grating_Physics/{p.relative_to(ROOT).as_posix()}':p.read_bytes() for p in files+backend}
-    entries['Grating_Physics/requirements.txt']=(folder/'requirements.txt').read_bytes()
-    entries['Grating_Physics/README.txt']=(folder/'README.txt').read_bytes()
+    entries={f'Grating_Physics/{p.relative_to(ROOT).as_posix()}':archive_bytes(p) for p in files+backend}
+    entries['Grating_Physics/requirements.txt']=archive_bytes(folder/'requirements.txt')
+    entries['Grating_Physics/README.txt']=archive_bytes(folder/'README.txt')
     archive=OUTPUT/f'grating_physics_{collection}.zip'
     with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as bundle:
         for name,data in sorted(entries.items()):

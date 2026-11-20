@@ -16,3 +16,4 @@ _build
 /.env
 /.env.*
 /jupyter_server_config.local.py
+/book/workflow.local.json

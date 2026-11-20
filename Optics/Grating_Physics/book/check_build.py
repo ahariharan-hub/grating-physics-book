@@ -1,6 +1,7 @@
 """Check pilot scope, parsed dropdown maths, and public credential isolation."""
 import json
 from pathlib import Path
+import re
 import zipfile
 
 import yaml
@@ -31,10 +32,20 @@ for path in content.glob('*.json'):
         continue
     details = [node for node in walk(page['mdast']) if node.get('type') == 'details']
     counts = [sum(node.get('type') in ('math', 'inlineMath') for node in walk(detail)) for detail in details]
-    assert counts and all(count > 0 for count in counts), (path.name, counts)
     records.append(dict(page=path.name, dropdowns=len(details), dropdown_math_nodes=counts))
 assert len(records) == len(PILOT), records
-assert sum(item['dropdowns'] for item in records) == 8
+source_dropdowns = []
+for name in PILOT:
+    notebook = json.loads((ROOT / name).read_text(encoding='utf-8'))
+    for cell in notebook['cells']:
+        if cell['cell_type'] == 'markdown':
+            assert '<details' not in ''.join(cell['source']).lower(), (
+                name, 'Use native MyST dropdowns so Answer mathematics is parsed.')
+            source_dropdowns.extend(re.findall(r'^:::\{dropdown\}[^\n]*\n(.*?)^:::\s*$',
+                                               ''.join(cell['source']), re.M | re.S))
+assert sum(item['dropdowns'] for item in records) == len(source_dropdowns)
+assert sum(count > 0 for item in records for count in item['dropdown_math_nodes']) >= sum(
+    '$' in source for source in source_dropdowns), 'A source math dropdown lost its parsed math.'
 archives = list((BUILD / 'public-pilot/_build/html/_public').glob('*.zip'))
 assert len(archives) == 2, [path.name for path in archives]
 for path in archives:
@@ -43,6 +54,6 @@ for path in archives:
 scan_public(BUILD / 'public-pilot/_build/html')
 output = dict(pilot_scope=f'{len(PILOT)} pages', dropdown_math=records, public_credentials='absent',
               downloadable_archives=len(archives),
-              browser_visual_check='unverified: computer-use URL policy block')
+              browser_visual_check='not covered by structural build validation')
 (ROOT / 'book/build-validation.json').write_text(json.dumps(output, indent=2)+'\n', encoding='utf-8')
 print(json.dumps(output, indent=2))

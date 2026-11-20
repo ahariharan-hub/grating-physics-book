@@ -1,8 +1,8 @@
 [
   {
     "file": "grating_physics_numerical_explorer.zip",
-    "sha256": "557a291eec681bad5bc48dbff767fa2adac3876c359d4be922405063eee806c8",
-    "bytes": 497934,
+    "sha256": "c9da63d4f2a848231fd0dc6fa300982e89cd23dc7fa454834c598fb20144c881",
+    "bytes": 493585,
     "entries": 110,
     "entrypoints": [
       "0_scalar_foundations.py",
@@ -25,8 +25,8 @@
   },
   {
     "file": "grating_physics_scripts.zip",
-    "sha256": "fb8e729549136a9872eb2f0ef38ed1cb39f703b81917d58e809e0ee1f0daa25f",
-    "bytes": 648731,
+    "sha256": "cd4e11329a1f201b11735686214b7570253f1bb6f209cdcbc54e1bc51e327852",
+    "bytes": 641617,
     "entries": 239,
     "entrypoints": [
       "8_3a_scalar_asm_propagation.py",
