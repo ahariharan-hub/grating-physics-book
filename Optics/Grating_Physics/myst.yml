@@ -14,6 +14,7 @@ project:
     - file: 0_1_Scalar_Fields_and_Helmholtz.ipynb
     - file: 0_2_Solutions_of_the_Helmholtz_Equation.ipynb
     - file: 0_3_Boundary_Conditions_and_Diffraction.ipynb
+    - file: 0_4_Propagation_of_Scalar_Optical_Fields.ipynb
 
 site:
   template: book-theme
