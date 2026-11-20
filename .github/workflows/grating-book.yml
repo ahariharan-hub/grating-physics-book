@@ -41,7 +41,9 @@ jobs:
       - name: Execute configured book notebooks
         run: python book/pilot.py execute
       - name: Check solution families and widget callbacks
-        run: python book/check_solutions.py
+        run: |
+          python book/check_solutions.py
+          python book/check_boundary.py
       - name: Build public pilot and scan for local credentials
         run: |
           python book/pilot.py build
