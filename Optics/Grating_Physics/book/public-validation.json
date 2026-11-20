@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-20",
+  "repository": "https://github.com/ahariharan-hub/grating-physics-book",
+  "book": "https://ahariharan-hub.github.io/grating-physics-book/",
+  "tested_binder_commit": "abe918f377d21f41ba2bc7edecc9ad7d5b0d2db2",
+  "static_site": {
+    "index": {
+      "http": 200,
+      "local_assets_checked": 2,
+      "katex_markup_occurrences": 509
+    },
+    "scalar-fields-and-helmholtz/": {
+      "http": 200,
+      "local_assets_checked": 2,
+      "katex_markup_occurrences": 386
+    },
+    "local_credentials": "absent",
+    "public_workflow": "passed on Ubuntu",
+    "workflow_url": "https://github.com/ahariharan-hub/grating-physics-book/actions/runs/44811555780"
+  },
+  "binder": {
+    "binder_launch": "passed",
+    "launch_seconds": 120.9,
+    "book_subdirectory_root": "passed",
+    "python3_kernel": "passed",
+    "notebook_code_cells": 4,
+    "notebook_execution": "passed",
+    "widget_trait_change": 1.25,
+    "widget_comm_frames": 29,
+    "cors_origin": "*",
+    "browser_ui": "unverified"
+  },
+  "browser_ui": "unverified; previous Computer Use attempt could not establish a safe browser URL"
+}

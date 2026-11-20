@@ -20,5 +20,6 @@
     }
   ],
   "public_credentials": "absent",
+  "downloadable_archives": 2,
   "browser_visual_check": "unverified: computer-use URL policy block"
 }

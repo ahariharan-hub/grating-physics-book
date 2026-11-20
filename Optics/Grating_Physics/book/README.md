@@ -23,3 +23,17 @@ static build. MyST currently labels in-page execution as beta.
 
 The upstream book theme currently emits a nonfatal schema warning for a
 `multiple` option. It does not prevent the tested build.
+
+## Public execution check: 2026-11-20
+
+GitHub Pages deployment and the Ubuntu execution/build workflow passed. A real
+Binder session launched in 120.9 seconds on its first uncached build, exposed the
+correct book subdirectory, executed all four cells in notebook 0.1, and sent 29
+widget comm frames after changing `Trial q/k` to 1.25. The tested source commit
+was `abe918f377d21f41ba2bc7edecc9ad7d5b0d2db2`; the subsequent download/report
+edits preserve the physics code and Binder environment. See
+`public-validation.json`. These are backend/protocol checks; rendered browser
+slider interaction remains unverified.
+
+Both downloadable ZIP bundles are directly linked from the pilot and checked
+for archive integrity during the build validation.
