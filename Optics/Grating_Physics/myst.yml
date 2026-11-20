@@ -1,0 +1,17 @@
+version: 1
+
+project:
+  id: a53bac7e-84df-4b93-b7c3-f28179403340
+  title: Grating Physics
+  github: https://github.com/ahariharan-hub/grating-physics-book
+  jupyter:
+    kernelName: python3
+    binder:
+      repo: ahariharan-hub/grating-physics-book
+      ref: main
+  toc:
+    - file: 0_0_Foundations_of_Scalar_Optics.ipynb
+    - file: 0_1_Scalar_Fields_and_Helmholtz.ipynb
+
+site:
+  template: book-theme

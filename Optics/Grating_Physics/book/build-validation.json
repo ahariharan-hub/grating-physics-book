@@ -1,0 +1,24 @@
+{
+  "pilot_scope": "two pages",
+  "dropdown_math": [
+    {
+      "page": "index.json",
+      "dropdowns": 2,
+      "dropdown_math_nodes": [
+        39,
+        32
+      ]
+    },
+    {
+      "page": "scalar-fields-and-helmholtz.json",
+      "dropdowns": 3,
+      "dropdown_math_nodes": [
+        2,
+        2,
+        6
+      ]
+    }
+  ],
+  "public_credentials": "absent",
+  "browser_visual_check": "unverified: computer-use URL policy block"
+}

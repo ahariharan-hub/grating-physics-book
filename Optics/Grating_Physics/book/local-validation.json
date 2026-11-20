@@ -1,0 +1,10 @@
+{
+  "preview_http": "passed",
+  "authenticated_server": "passed",
+  "cors": "passed",
+  "kernel_environment": "grating-book",
+  "notebook_execution": "passed",
+  "widget_trait_change": 1.25,
+  "widget_comm_frames": 29,
+  "browser_ui": "unverified: computer-use URL policy block"
+}

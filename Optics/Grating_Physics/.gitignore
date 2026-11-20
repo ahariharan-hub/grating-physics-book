@@ -1,0 +1,18 @@
+# Local Python environment and regenerable caches.
+/.venv/
+/.uv-cache/
+**/__pycache__/
+**/.pytest_cache/
+*.py[cod]
+
+# Temporary execution copies, review renders and package-install scratch files.
+/tmp/
+
+# MyST build outputs
+_build
+
+# Private local execution/preview credentials must never become book sources.
+/myst.local.yml
+/.env
+/.env.*
+/jupyter_server_config.local.py

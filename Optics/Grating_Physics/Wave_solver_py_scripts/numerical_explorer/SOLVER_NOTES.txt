@@ -1,0 +1,274 @@
+EXISTING SOLVER PLAYGROUNDS
+
+Edit the parameter block, then run the entire file with F5 in Spyder or Python.
+Each experiment runs independently from any working directory. Keep this folder
+inside the repository. Requires NumPy, SciPy, Matplotlib and a Qt backend for the
+interactive windows. Set interactive=False for headless calculation. No script
+uses main() or automatically saves data/figures. plot_backend=None respects the IDE.
+
+CHOOSE AN EXPERIMENT
+
+- A1_1_scalar_fmm_grating.py: lossless periodic scalar/TE material scattering, complex
+  transmission, efficiencies, directions and animated orders. Detailed notes below.
+
+- A2_1_finite_grating_propagation.py: finite ideal openings under Gaussian or uniform
+  illumination. The slits are uniform along y; the model varies along x and s.
+  Shows diffraction lobes, angular-spectrum shape and intensity. The propagation
+  map has equal physical scales so direction-guide angles are not distorted.
+  Uses existing binary transmission and ASM helpers; NOT finite-material FMM.
+  Increase FFT window and sample count independently. Edge diagnostics are useful
+  warnings, not proofs against wraparound. Spectral shape is not power efficiency.
+
+- 8_3a_scalar_asm_propagation.py: prescribed 2D circle, rectangle, Gaussian, slit or
+  double slit. Shows input/output amplitude, phase and intensity, plus an ASM /
+  Fresnel profile. Uses scalar_propagation.propagate_field; no material scattering
+  or imaging lens. The field-difference diagnostic uses the full FFT window.
+  The finite FFT domain is periodic; check padding and resolution.
+
+- A1_2_absorbing_fmm_grating.py: normal-incidence physical absorber, air exteriors.
+  Shows Im(n), full field, complex coefficients, ideal-mask comparison and R/T/A.
+  Absorption is independently integrated over the layer. Changing output depth
+  reuses the solve. Uses absorbing_grating.py and IdealAmplitudeGrating.
+  The clear opening is centered at x=0; the dielectric script centers its ridge.
+  Material indices are illustrative; they are not calibrated 193 nm data.
+
+- A1_3_fmm_convergence.py: compares complex propagating coefficients and a near-field
+  ROI across Fourier cutoffs. Includes a terminal table, flux balance, residuals
+  and a selected complex coefficient. Highest M is a numerical reference, not
+  exact truth or an error datum. Missing low-M propagating labels count as zero.
+  Flux conservation and tiny matching residuals do not certify basis convergence.
+
+- A1_4_grating_parameter_sweep.py: independently solves thickness, wavelength, period,
+  ridge fraction (duty_cycle), ridge index or output index. Plots magnitudes,
+  phases, efficiencies and total R/T. Invalid/singular points remain gaps and are
+  listed in experiment.result['failures']. Check M AND sweep-point density.
+  Uses scalar_grating.py, with a common incident exit-phase reference.
+
+- 8_3b_talbot_propagation.py: an infinite periodic thin amplitude mask. One period is
+  computed and three tiled periods displayed. Compares ASM, Fresnel, output
+  intensity and carrier-removed complex-field recurrence. z_T=2*d^2/lambda is a
+  PARAXIAL prediction; exact scalar ASM need not revive a sharp mask perfectly.
+  Uses existing binary-mask and propagation helpers. Check samples. This is free
+  propagation, not image formation by a collecting objective.
+
+COMMON CONTROLS AND CONVENTIONS
+- Sliders are pending until Apply; dragging does not recompute. Reset restores
+  startup values. Repeated Apply reuses artists' axes without accumulating colorbars.
+- All lengths are um. wavelength is VACUUM wavelength; ASM uses lambda=wavelength/n.
+- ASM scripts use output distance s>=0. Material scripts transmit toward -z, with
+  s=-z-h below the exit. All use exp(-i omega t).
+- |U|^2 is relative scalar intensity. Normal diffraction efficiency additionally
+  uses longitudinal flux factors; the two are not interchangeable.
+- Material coefficient plots use a_m=C_m/exp(i*k_i*h), the same fixed incident
+  exit reference as spatial effective transmission; there is no fitted phase.
+- Material models are normal-incidence scalar/TE, not general vector polarization
+  or physically finite lateral gratings. Existing physics backends are unchanged.
+- _playground.py shares presentation controls and FFT orchestration only.
+
+READING
+NIST order convergence: https://pages.nist.gov/SCATMECH/docs/rcwmodel.htm
+TU Delft propagation: https://interactivetextbooks.tudelft.nl/tn2421/content/Chap6_Diffraction/DiffractiveOptics_2022_01Clean.html
+
+ORIGINAL FMM EXPLORER: DETAILED NOTES
+============================================================
+
+SCALAR FOURIER MODAL METHOD (FMM) EXPLORER
+
+Companion to Appendix 1: Fourier Modal Method for Scalar Grating Scattering.
+The script calls wave_optics/scalar_grating.py unchanged. Keep the folder in this
+repository; it locates the package relative to its own file, not the working directory.
+
+REQUIREMENTS
+Python with NumPy, SciPy and Matplotlib. A desktop Matplotlib backend is required
+for the interactive window (default: QtAgg, using PyQt or PySide). No Jupyter kernel or ipywidgets is required.
+
+EDIT AND RUN
+Open A1_1_scalar_fmm_grating.py and edit the parameter block near the top.
+Set wavelength (vacuum), period, thickness, duty_cycle (ridge fraction),
+n_incident, n_output, n_ridge, n_groove, M and output_depth.
+Set convergence_cutoffs = [2, 8, 24, 48] for an optional basis comparison.
+Set interactive = False to calculate without opening a window.
+Then run from any working directory:
+  python path/to/A1_1_scalar_fmm_grating.py
+
+SPYDER
+Run the entire file with F5. The default plot_backend = 'QtAgg' opens a separate
+window with working sliders, rather than a static image in Spyder's Plots pane.
+If Spyder has retained an earlier Agg/inline backend, restart its kernel and run
+again. Set plot_backend = None to respect your IDE's existing backend instead.
+The figure stays open until you close it; no results are saved.
+
+INTERACTION
+Adjust vacuum wavelength, ridge index, ridge fraction, thickness, M and observation
+depth. Click Apply / solve to calculate. Slider movements do not run the solver.
+Changing only depth reuses the scattering solution. Reset restores startup values.
+Use standard Matplotlib pan and zoom tools. Exterior and groove indices and
+pitch are set in the parameter block. The window may be closed normally.
+
+PHYSICAL MODEL AND CONVENTIONS
+Lossless real-index scalar layer, normal plane-wave incidence, one-dimensional
+periodicity, no finite beam or substrate thickness. Incident and output indices
+can differ. Full vector polarization-coupled scattering and absorption are not
+implemented by this script. It matches scalar U and its normal derivative.
+Lengths are micrometres. wavelength means VACUUM wavelength lambda0; the exterior
+wavelength is lambda0/n on the respective side. Time factor exp(-i omega t);
+transmission toward -z. Incident amplitude and phase are 1 and 0 at z=0.
+The centered ridge occupies fraction duty_cycle; it is not the clear fraction.
+
+F_m(z) denotes a Fourier harmonic function. C_m(z_ref)=F_m(z_ref) is its value
+at the selected output plane z_ref=-h-depth. Q is the harmonic coupling matrix.
+Its eigenvectors define layer modes; Q itself is not a layer eigenmode.
+The C plot is a complex plane: magnitude is distance from the origin and phase
+is its angle. Tiny coefficients have undefined plotted phase below 1e-6.
+
+NUMERICAL CONTROL
+M is the cutoff: retain m=-M,...,+M, N=2M+1, including exterior evanescent orders.
+It is not the number of propagating beams or a display-only control.
+The full-output and propagating-only curves use ONE scattering solution; filtering
+is not another solve. Near-field differences can be important.
+convergence_cutoffs compares common propagating exit coefficients against the largest M,
+using max|delta C|/max|C_reference|. Every cutoff must include those order labels.
+The largest M is only a numerical reference. Check successive increases for your
+observable; this coefficient check does not certify every near-field pixel.
+R+T approximately one checks lossless flux balance, not truncation convergence.
+Increasing M costs time and memory. Cutoff/grazing configurations may be singular;
+the solver reports these rather than silently inventing coefficients.
+
+OUTPUTS
+Results appear in the figure and terminal. The script writes no data or figure files.
+The execution steps are directly under the module guard, without a main() function.
+
+BINARY AMPLITUDE MASK / FFT COMPARISON
+For equal exterior indices, the FFT reference uses transmission 1 in the groove
+and 0 in the ridge. The open fraction is 1-duty_cycle (200 nm of a 600 nm period
+for duty_cycle=2/3). It is not a dielectric phase mask. Existing binary-mask
+and Fourier-extraction helpers are reused; no physics backend is changed.
+The FMM calculation still solves the specified lossless dielectric layer. A
+binary opaque/clear mask is a DIFFERENT ideal object, not a quantitative local
+approximation to that dielectric layer.
+Both are compared at exit z=-h and the chosen observation plane. The binary
+mask includes a common exp(i*k0*n_incident*h) carrier to retain incident U(0)=1.
+No fitted phase or power normalization is applied. The transparent region has
+unit amplitude relative to that incident carrier, and the ridge has zero field.
+The FFT transforms the field, not intensity. Midpoint samples cover one period,
+with the coordinate-origin phase correction. The ridge is centered at zero;
+the opening is centered at d/2, so phases must account for that origin.
+Propagation uses exp(i*beta*depth), including decaying evanescent harmonics.
+Both models retain -M,...,+M. thin_fft_samples controls sampling separately
+from M. FFT error compares with exact binary-mask Fourier coefficients; it
+is not a measure of agreement with FMM. Unequal exterior indices omit the
+binary-mask comparison while FMM still runs.
+
+DISPLAY DOMAIN
+The material map, solved field and output profile show one period, 0 <= x <= d.
+The groove is centered at d/2, with ridge halves at the two periodic boundaries.
+This display does not change the backend origin, coefficient phases or periodicity.
+
+ORDER DIRECTIONS
+A second window shows reflected (+z) and transmitted (-z) order directions.
+Labels Rm/Tm identify orders; the table gives signed angles and normal power.
+Each angle is measured from its outgoing normal toward +x. Arrow lengths are
+unit direction vectors, not beam sizes or distances. Interfaces are collapsed
+in this schematic. Evanescent harmonics have no real angle and are counted
+separately. Grazing components have zero normal power. Directions update on
+Apply when physical parameters change; changing detector depth leaves them fixed.
+Closing the main explorer also closes its direction window. No files are saved.
+
+COEFFICIENT COMPARISON PANELS
+The main window's top-right and bottom-left panels show coefficient magnitude
+and phase versus order, replacing the coupling-matrix and complex-plane plots.
+Blue: FMM physical grating. Red hollow markers: FFT binary amplitude mask for the same
+geometry. Both are referenced to exit z=-h and incident U(0)=1, with no phase
+fitting or power normalization. The binary mask prescribes opaque/clear transmission; it is not an FFT solution
+of material scattering or the same dielectric object as the FMM calculation.
+Weak phases and FFT phases dominated by sampling error are hidden.
+order_xlim sets the visible order range; M still sets the solve.
+Apply/Reset update the panels. Output depth does not change exit coefficients.
+There is no separate coefficient window. No aerial-image calculation or saving.
+
+PLOT LIMITS
+Edit order_xlim to set the visible order range in magnitude, phase and diffraction
+efficiency panels (default -7.5 to +7.5). All retained coefficients remain plotted;
+only the viewing range changes. Use None to see the automatic full range.
+Set magnitude_ylim, phase_ylim (radians) and efficiency_ylim independently.
+For example: order_xlim = (-3.5, 3.5), magnitude_ylim = (0, 1),
+phase_ylim = (-3.2, 3.2), efficiency_ylim = (0, 0.6).
+output_xlim (um) and output_ylim set the detector-profile axes. A bound of None
+lets Matplotlib choose that bound automatically. Rerun after editing settings.
+Diffraction efficiency means outgoing normal power divided by incident normal
+power. The binary-mask reference is not forced to conserve that flux.
+
+FIELD-MAP DIRECTION ARROWS
+show_field_directions = True overlays reflected (lime Rm) and transmitted (cyan
+Tm) directions on the full-field map. A white arrow marks normal incidence.
+Arrows start at the appropriate entrance/exit interface; equal x/z scales keep
+angles correct. They mark wavevector directions, not beam edges or paths of the
+total near-field energy flow. Evanescent harmonics remain in the solved field
+but have no real-angle arrow. The overlay shows up to three reflected and seven transmitted propagating
+orders, ranked by power; Figure 2 still shows all directions. Set False to hide overlays.
+
+LARGE-RANGE PROPAGATION (FIGURE 3)
+A third window shows a signed real-field map over many wavelengths, with output
+distance horizontal and transverse position vertical. Left: transmitted
+propagating-field sum. Right: one order alone, normalized by its own coefficient
+magnitude to reveal wavefronts. These are fixed-phase field snapshots, not intensity.
+The total map uses incident-amplitude units. Axes use vacuum wavelength lambda0
+and equal spatial scales. The black line is the exit reference, not a finite slit.
+Edit propagation_depth_wavelengths (20), propagation_half_width_wavelengths (10)
+and propagation_order (+1). If that order cannot propagate, the view falls back
+to zero; negligible selected amplitudes produce a blank map. All propagating
+orders enter the sum; at most eleven arrows are drawn, ranked by magnitude.
+Evanescent harmonics are omitted only from this large-range view and retained
+in the original near-field map and scattering solve. No beam envelopes, new
+scattering solves or imaging optics are introduced. Figure 2 remains available.
+Apply/Reset update the view when the solved configuration changes. Depth-only
+changes leave this separate large-range view unchanged. No files are saved.
+
+SEE THE WAVE MOVE
+In Figure 3, select an order with Order m, then press Play. The right panel shows
+its signed field alone; crests move normal to the wavefronts, along its arrow.
+Time t/T also lets you step through one optical cycle. The left panel contains
+all orders and has no single wavevector; it cannot display them as separate beams.
+Animation uses Re[U exp(-i*2*pi*t/T)] and cached complex fields. It changes no
+coefficients, powers or scattering solve. Changing the selected order also
+reuses the existing solution. Pause or close the window to stop the timer.
+
+LIKE-FOR-LIKE TRANSMISSION IN FIGURE 1
+The bottom row compares the ideal complex t(x) directly with FMM effective
+transmission at the EXIT z=-h. The common reference is the unit incident plane
+wave continued to that plane: U_inc_ref=exp(i*k0*n_incident*h).
+  Ideal: t=1 in the opening, 0 in the ridge.
+  FMM: t_eff=U_out(x,-h)/U_inc_ref.
+The panels compare Re/Im, magnitude and phase of these two complex quantities.
+Both therefore use the same plane, coordinates and incident-field normalization.
+Ideal transmission phase is zero in the opening and undefined in opaque regions.
+FMM phase is hidden where its amplitude is negligible and at wrap jumps.
+No fitted phase adjustment or intensity normalization is applied.
+
+These are exit transmission profiles, not downstream field profiles. They update
+with grating parameters but stay fixed when only detector depth changes.
+The output-intensity panel remains a separate comparison of propagated FMM and
+binary-mask FFT fields at the selected detector plane. Raw mask-plane step guides
+have been removed from that downstream panel. Material-scattering FMM and the
+ideal binary mask remain different models, now compared using matching quantities.
+output_xlim sets the profile x range; field_signed_ylim, field_amplitude_ylim
+and field_phase_ylim set the transmission y ranges. No data or figures are saved.
+
+RIGOROUS PHASE REFERENCE AND PLOT STYLE
+Exit coefficient plots now show a_m=C_m/U_inc_ref, using the SAME continued
+incident reference as spatial t_eff=U_exit/U_inc_ref. This changes displayed
+phase only; the solver coefficients, fields, efficiencies and propagation are
+unchanged. For the binary mask, significant real Fourier coefficients therefore
+have phase 0 or pi (opening position still matters). Undefined phases at zero
+coefficients are hidden; FFT sampling residuals do not receive a phase marker.
+Order phases are discrete markers, without misleading connecting lines. Both
+phase plots use the principal branch (-pi,pi], with +/-pi roundoff represented
+consistently as +pi. Spatial phase curves break at branch cuts.
+Blue is FMM and orange is the ideal mask/FFT throughout the comparisons; green
+and purple distinguish their imaginary parts. Solid versus dashed/hollow styles
+also distinguish the models. plot_linewidth and plot_marker_size near the top
+control readability. These are graphical settings, not grating thickness.
+
+Plot titles use mathematical symbols for n(x,z), U(x,z), C_m, normalized a_m,
+t(x), t_eff(x), R_m, T_m and wavevectors. C_m remains the solver exit coefficient;
+a_m=C_m/U_inc_ref is its displayed incident-normalized transmission coefficient.

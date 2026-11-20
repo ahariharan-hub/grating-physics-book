@@ -1,0 +1,982 @@
+[
+  {
+    "notebook": "0.1",
+    "number": 1,
+    "title": "Convert vacuum wavelength to medium wavelength",
+    "section": "Refractive index and the monochromatic field",
+    "file": "chapter_0/0_1_01_medium_wavelength.py"
+  },
+  {
+    "notebook": "0.1",
+    "number": 2,
+    "title": "Recover a real field from a complex phasor",
+    "section": "Separate the monochromatic time dependence",
+    "file": "chapter_0/0_1_02_phasor_and_real_field.py"
+  },
+  {
+    "notebook": "0.1",
+    "number": 3,
+    "title": "Test an allowed and an incorrect spatial wavenumber",
+    "section": "Does a trial field satisfy Helmholtz?",
+    "file": "chapter_0/0_1_03_helmholtz_trial_residual.py"
+  },
+  {
+    "notebook": "0.1",
+    "number": 4,
+    "title": "Check the convergence of a numerical second derivative",
+    "section": "Numerically verify the Helmholtz equation",
+    "file": "chapter_0/0_1_04_finite_difference_helmholtz.py"
+  },
+  {
+    "notebook": "0.2",
+    "number": 1,
+    "title": "Build a standing wave from opposite travelling waves",
+    "section": "Plane waves and standing waves",
+    "file": "chapter_0/0_2_01_travelling_and_standing.py"
+  },
+  {
+    "notebook": "0.2",
+    "number": 2,
+    "title": "Verify spherical and cylindrical radial solutions",
+    "section": "Outgoing spherical and cylindrical waves",
+    "file": "chapter_0/0_2_02_radial_helmholtz.py"
+  },
+  {
+    "notebook": "0.2",
+    "number": 3,
+    "title": "Construct a Bessel beam by angular quadrature",
+    "section": "Bessel beams as superpositions of plane waves",
+    "file": "chapter_0/0_2_03_bessel_cone_sum.py"
+  },
+  {
+    "notebook": "0.2",
+    "number": 4,
+    "title": "Implement Gaussian spreading and check transverse power",
+    "section": "Gaussian families and the paraxial approximation",
+    "file": "chapter_0/0_2_04_paraxial_gaussian_power.py"
+  },
+  {
+    "notebook": "0.3",
+    "number": 1,
+    "title": "Check linear superposition with complex amplitudes",
+    "section": "Why can optical waves be added?",
+    "file": "chapter_0/0_3_01_superposition_residual.py"
+  },
+  {
+    "notebook": "0.3",
+    "number": 2,
+    "title": "Compare fields that share the same boundary value",
+    "section": "Does one boundary value select one field?",
+    "file": "chapter_0/0_3_02_boundary_nonuniqueness.py"
+  },
+  {
+    "notebook": "0.3",
+    "number": 3,
+    "title": "Integrate a slit far field and recover the sinc pattern",
+    "section": "What happens when a plane wave encounters an aperture?",
+    "file": "chapter_0/0_3_03_slit_phasor_quadrature.py"
+  },
+  {
+    "notebook": "0.3",
+    "number": 4,
+    "title": "Prescribe an illuminated grating boundary and test its translation",
+    "section": "How does this connect to a grating?",
+    "file": "chapter_0/0_3_04_periodic_boundary_field.py"
+  },
+  {
+    "notebook": "0.4",
+    "number": 1,
+    "title": "Reconstruct a complex field with and without spectral phase",
+    "section": "A complicated field can be built from plane waves",
+    "file": "chapter_0/0_4_01_fft_reconstruction_phase.py"
+  },
+  {
+    "notebook": "0.4",
+    "number": 2,
+    "title": "Choose the outgoing square-root branch for each component",
+    "section": "How does each component propagate?",
+    "file": "chapter_0/0_4_02_component_multiplier.py"
+  },
+  {
+    "notebook": "0.4",
+    "number": 3,
+    "title": "Propagate a sampled slit by the angular-spectrum method",
+    "section": "Reconstruct the propagated field",
+    "file": "chapter_0/0_4_03_asm_slit_from_scratch.py"
+  },
+  {
+    "notebook": "0.4",
+    "number": 4,
+    "title": "Separate FFT resolution from window-padding effects",
+    "section": "How does ASM relate to numerical sampling?",
+    "file": "chapter_0/0_4_04_sampling_and_padding.py"
+  },
+  {
+    "notebook": "0.5",
+    "number": 1,
+    "title": "Discretize an absorbing grating geometry",
+    "section": "What physical inputs select the field?",
+    "file": "chapter_0/0_5_01_material_geometry.py"
+  },
+  {
+    "notebook": "0.5",
+    "number": 2,
+    "title": "Solve a physical grating and inspect its power budget",
+    "section": "What field does the solver calculate?",
+    "file": "chapter_0/0_5_02_solve_and_power_balance.py"
+  },
+  {
+    "notebook": "0.5",
+    "number": 3,
+    "title": "Compare a propagating-only cutoff with larger Fourier bases",
+    "section": "Can we solve using only propagating orders?",
+    "file": "chapter_0/0_5_03_basis_convergence.py"
+  },
+  {
+    "notebook": "0.5",
+    "number": 4,
+    "title": "Rebuild the solved field with an explicit Fourier sum",
+    "section": "How does the same problem look in Fourier space?",
+    "file": "chapter_0/0_5_04_explicit_harmonic_sum.py"
+  },
+  {
+    "notebook": "0.6",
+    "number": 1,
+    "title": "Recover one coefficient by numerical projection",
+    "section": "Can samples recover one complex coefficient?",
+    "file": "chapter_0/0_6_01_project_complex_coefficient.py"
+  },
+  {
+    "notebook": "0.6",
+    "number": 2,
+    "title": "Advance complex coefficients to a new reference plane",
+    "section": "What changes when we move the output reference plane?",
+    "file": "chapter_0/0_6_02_reference_plane_evolution.py"
+  },
+  {
+    "notebook": "0.6",
+    "number": 3,
+    "title": "Distinguish coefficient magnitude squared from normal power",
+    "section": "Where does the incident power go?",
+    "file": "chapter_0/0_6_03_flux_weights.py"
+  },
+  {
+    "notebook": "0.6",
+    "number": 4,
+    "title": "Check Parseval and the importance of complex order phase",
+    "section": "One field, two representations",
+    "file": "chapter_0/0_6_04_parseval_field_and_orders.py"
+  },
+  {
+    "notebook": "0.7",
+    "number": 1,
+    "title": "Integrate ideal binary-mask Fourier coefficients",
+    "section": "From the prescribed mask to common-plane coefficients",
+    "file": "chapter_0/0_7_01_ideal_mask_coefficients.py"
+  },
+  {
+    "notebook": "0.7",
+    "number": 2,
+    "title": "Compare physical and ideal masks with one exit-phase reference",
+    "section": "Read the field and coefficient views",
+    "file": "chapter_0/0_7_02_common_phase_reference.py"
+  },
+  {
+    "notebook": "0.7",
+    "number": 3,
+    "title": "Test whether greater absorber thickness approaches an ideal mask",
+    "section": "Does thicker mean closer to ideal?",
+    "file": "chapter_0/0_7_03_absorber_thickness_scan.py"
+  },
+  {
+    "notebook": "0.7",
+    "number": 4,
+    "title": "Propagate physical and ideal coefficients to the same observation plane",
+    "section": "Complex coefficients and the next physical model",
+    "file": "chapter_0/0_7_04_compare_at_common_depth.py"
+  },
+  {
+    "notebook": "1.1",
+    "number": 1,
+    "title": "Sample one optical oscillation in time",
+    "section": "Oscillation and phase",
+    "file": "chapter_1/1_1_01_time_oscillation.py"
+  },
+  {
+    "notebook": "1.1",
+    "number": 2,
+    "title": "Compute travelling-wave snapshots in both directions",
+    "section": "Wavelength and propagation direction",
+    "file": "chapter_1/1_1_02_moving_snapshot.py"
+  },
+  {
+    "notebook": "1.1",
+    "number": 3,
+    "title": "Recover amplitude and phase from quadrature samples",
+    "section": "Complex phase and a real measurement",
+    "file": "chapter_1/1_1_03_recover_complex_phase.py"
+  },
+  {
+    "notebook": "1.1",
+    "number": 4,
+    "title": "Estimate oscillation frequency with a sampled Fourier transform",
+    "section": "Period, frequency and numerical sampling",
+    "file": "chapter_1/1_1_04_fft_temporal_frequency.py"
+  },
+  {
+    "notebook": "1.2",
+    "number": 1,
+    "title": "Integrate uniform and Gaussian illumination over finite windows",
+    "section": "Width and integrated intensity",
+    "file": "chapter_1/1_2_01_finite_window_power.py"
+  },
+  {
+    "notebook": "1.2",
+    "number": 2,
+    "title": "Calculate the angular spectrum of a finite Gaussian beam",
+    "section": "A finite beam contains many directions",
+    "file": "chapter_1/1_2_02_beam_angular_spectrum.py"
+  },
+  {
+    "notebook": "1.2",
+    "number": 3,
+    "title": "Compare finite-beam propagation with a uniform plane wave",
+    "section": "When is the plane-wave approximation useful?",
+    "file": "chapter_1/1_2_03_finite_beam_propagation.py"
+  },
+  {
+    "notebook": "1.2",
+    "number": 4,
+    "title": "Estimate local directions from a paraxial Gaussian phase",
+    "section": "What does a wavevector arrow tell us?",
+    "file": "chapter_1/1_2_04_beam_local_phase_gradient.py"
+  },
+  {
+    "notebook": "1.3",
+    "number": 1,
+    "title": "Draw constant-phase lines and the perpendicular wavevector",
+    "section": "Wavefronts and wavevectors",
+    "file": "chapter_1/1_3_01_wavefront_map.py"
+  },
+  {
+    "notebook": "1.3",
+    "number": 2,
+    "title": "Measure phase change along and across a wavevector",
+    "section": "Walk along or perpendicular to the wavevector",
+    "file": "chapter_1/1_3_02_directional_phase_change.py"
+  },
+  {
+    "notebook": "1.3",
+    "number": 3,
+    "title": "Recover a wavevector from sampled complex phase",
+    "section": "Phase gradients and propagation direction",
+    "file": "chapter_1/1_3_03_retrieve_phase_gradient.py"
+  },
+  {
+    "notebook": "1.3",
+    "number": 4,
+    "title": "Find a plane-wave direction using a two-dimensional FFT",
+    "section": "Plane-wave direction in Fourier space",
+    "file": "chapter_1/1_3_04_fft_wavevector.py"
+  },
+  {
+    "notebook": "1.4",
+    "number": 1,
+    "title": "Construct a 3D wavevector from polar and azimuthal angles",
+    "section": "Three dimensions",
+    "file": "chapter_1/1_4_01_direction_cosines.py"
+  },
+  {
+    "notebook": "1.4",
+    "number": 2,
+    "title": "Evaluate a 3D field using matrix multiplication and explicit loops",
+    "section": "One number at each 3D position",
+    "file": "chapter_1/1_4_02_three_dimensional_samples.py"
+  },
+  {
+    "notebook": "1.4",
+    "number": 3,
+    "title": "Retrieve all three wavevector components from phase samples",
+    "section": "Spatial phase in three dimensions",
+    "file": "chapter_1/1_4_03_recover_three_components.py"
+  },
+  {
+    "notebook": "1.4",
+    "number": 4,
+    "title": "Rotate the field geometry without changing its physical phase",
+    "section": "Wavevectors and coordinate frames",
+    "file": "chapter_1/1_4_04_rotate_coordinates.py"
+  },
+  {
+    "notebook": "2.1",
+    "number": 1,
+    "title": "Resolve a single opening by direct far-field quadrature",
+    "section": "Start with one isolated slit",
+    "file": "chapter_2/2_1_01_single_slit_integral.py"
+  },
+  {
+    "notebook": "2.1",
+    "number": 2,
+    "title": "Sum equally driven openings and recover the finite-array factor",
+    "section": "Repeat the opening to make a grating",
+    "file": "chapter_2/2_1_02_finite_array_sum.py"
+  },
+  {
+    "notebook": "2.1",
+    "number": 3,
+    "title": "Combine opening width with the finite-array phase sum",
+    "section": "From an opening to a finite grating",
+    "file": "chapter_2/2_1_03_slit_envelope_times_array.py"
+  },
+  {
+    "notebook": "2.1",
+    "number": 4,
+    "title": "Compute a finite grating spectrum from sampled real-space openings",
+    "section": "Numerical representation of finite openings",
+    "file": "chapter_2/2_1_04_finite_mask_fft.py"
+  },
+  {
+    "notebook": "2.2",
+    "number": 1,
+    "title": "Evaluate incident complex phase at neighbouring openings",
+    "section": "Illuminate the surface straight on and tilted",
+    "file": "chapter_2/2_2_01_neighbouring_opening_phases.py"
+  },
+  {
+    "notebook": "2.2",
+    "number": 2,
+    "title": "Multiply a binary transmission by a tilted complex field",
+    "section": "What does the grating do at the surface?",
+    "file": "chapter_2/2_2_02_mask_times_illumination.py"
+  },
+  {
+    "notebook": "2.2",
+    "number": 3,
+    "title": "Verify the Bloch translation law for illuminated openings",
+    "section": "Surface-field translation",
+    "file": "chapter_2/2_2_03_bloch_translation.py"
+  },
+  {
+    "notebook": "2.2",
+    "number": 4,
+    "title": "Measure the spectral shift caused by an incident phase ramp",
+    "section": "Illumination and the angular spectrum",
+    "file": "chapter_2/2_2_04_illumination_spectral_shift.py"
+  },
+  {
+    "notebook": "2.3",
+    "number": 1,
+    "title": "Enumerate every retained order before classifying it",
+    "section": "Meet the diffraction orders",
+    "file": "chapter_2/2_3_01_enumerate_order_candidates.py"
+  },
+  {
+    "notebook": "2.3",
+    "number": 2,
+    "title": "Recover the grating-angle law from vector components",
+    "section": "Recover the angle equation",
+    "file": "chapter_2/2_3_02_angle_and_wavevector.py"
+  },
+  {
+    "notebook": "2.3",
+    "number": 3,
+    "title": "Locate a diffraction-order cutoff in wavelength",
+    "section": "Allowed and nonpropagating orders",
+    "file": "chapter_2/2_3_03_rayleigh_threshold.py"
+  },
+  {
+    "notebook": "2.3",
+    "number": 4,
+    "title": "Construct a selected outgoing wave without assigning an efficiency",
+    "section": "Build one outgoing wavevector",
+    "file": "chapter_2/2_3_04_selected_outgoing_field.py"
+  },
+  {
+    "notebook": "2.4",
+    "number": 1,
+    "title": "Convert one set of orders between k, frequency and direction cosine",
+    "section": "One order on three coordinate scales",
+    "file": "chapter_2/2_4_01_coordinate_conversions.py"
+  },
+  {
+    "notebook": "2.4",
+    "number": 2,
+    "title": "Intersect outgoing rays with a sphere and a detector plane",
+    "section": "Where does one order meet each surface?",
+    "file": "chapter_2/2_4_02_sphere_and_plane.py"
+  },
+  {
+    "notebook": "2.4",
+    "number": 3,
+    "title": "Compare uniform transverse spacing with nonuniform angle spacing",
+    "section": "Check the spacing",
+    "file": "chapter_2/2_4_03_spacing_is_coordinate_dependent.py"
+  },
+  {
+    "notebook": "2.4",
+    "number": 4,
+    "title": "Translate a direction-circle representation into scattering-vector coordinates",
+    "section": "The same orders on two surfaces",
+    "file": "chapter_2/2_4_04_ewald_harvey_coordinates.py"
+  },
+  {
+    "notebook": "3.1",
+    "number": 1,
+    "title": "Calculate the incident phase difference across one pitch",
+    "section": "Compare two positions at the same time",
+    "file": "chapter_3/3_1_01_phase_across_period.py"
+  },
+  {
+    "notebook": "3.1",
+    "number": 2,
+    "title": "Recover allowed transverse components from discrete translation",
+    "section": "Connect phase change to diffraction orders",
+    "file": "chapter_3/3_1_02_integer_translation_rule.py"
+  },
+  {
+    "notebook": "3.1",
+    "number": 3,
+    "title": "Estimate incident direction by unwrapping sampled phase",
+    "section": "Explore the surface phase change",
+    "file": "chapter_3/3_1_03_fit_surface_phase_slope.py"
+  },
+  {
+    "notebook": "3.1",
+    "number": 4,
+    "title": "Show why one complex translation factor cannot count phase cycles",
+    "section": "Phase cycles and the order rule",
+    "file": "chapter_3/3_1_04_modulo_phase_ambiguity.py"
+  },
+  {
+    "notebook": "3.2",
+    "number": 1,
+    "title": "Build a selected-order wave and check the surface seam",
+    "section": "Follow the wave into a selected order",
+    "file": "chapter_3/3_2_01_matched_order_field.py"
+  },
+  {
+    "notebook": "3.2",
+    "number": 2,
+    "title": "Measure phase mismatch for a noninteger trial order",
+    "section": "Test the seam in phase cycles",
+    "file": "chapter_3/3_2_02_noninteger_seam_error.py"
+  },
+  {
+    "notebook": "3.2",
+    "number": 3,
+    "title": "Complete the longitudinal component after tangential matching",
+    "section": "Phase matching versus a real outgoing direction",
+    "file": "chapter_3/3_2_03_dispersion_after_matching.py"
+  },
+  {
+    "notebook": "3.2",
+    "number": 4,
+    "title": "Remove the incident carrier before projecting order labels",
+    "section": "Selected orders and phase continuity",
+    "file": "chapter_3/3_2_04_bloch_fourier_projection.py"
+  },
+  {
+    "notebook": "3.3",
+    "number": 1,
+    "title": "Convert incident and outgoing path projections into phase",
+    "section": "Connect phase cycles to path length",
+    "file": "chapter_3/3_3_01_projected_path_difference.py"
+  },
+  {
+    "notebook": "3.3",
+    "number": 2,
+    "title": "Add two path contributions as complex amplitudes",
+    "section": "Path difference and constructive interference",
+    "file": "chapter_3/3_3_02_two_opening_path_sum.py"
+  },
+  {
+    "notebook": "3.3",
+    "number": 3,
+    "title": "Recover a diffraction angle from an integer path increment",
+    "section": "From path difference to the order angle",
+    "file": "chapter_3/3_3_03_invert_path_projection.py"
+  },
+  {
+    "notebook": "3.3",
+    "number": 4,
+    "title": "Build grating maxima from a finite set of path differences",
+    "section": "Many openings and integer phase cycles",
+    "file": "chapter_3/3_3_04_many_path_interference.py"
+  },
+  {
+    "notebook": "4.1",
+    "number": 1,
+    "title": "Compute propagating and evanescent longitudinal components",
+    "section": "Complete the normal component",
+    "file": "chapter_4/4_1_01_complex_longitudinal_root.py"
+  },
+  {
+    "notebook": "4.1",
+    "number": 2,
+    "title": "Construct and sample an evanescent field in space",
+    "section": "An imaginary component produces a real decaying field",
+    "file": "chapter_4/4_1_02_construct_decaying_field.py"
+  },
+  {
+    "notebook": "4.1",
+    "number": 3,
+    "title": "Verify that a decaying oscillatory field still satisfies Helmholtz",
+    "section": "Constructing an evanescent solution",
+    "file": "chapter_4/4_1_03_evanescent_helmholtz_residual.py"
+  },
+  {
+    "notebook": "4.1",
+    "number": 4,
+    "title": "Propagate a boundary containing both real and imaginary longitudinal components",
+    "section": "Keep an order that has no real outgoing direction",
+    "file": "chapter_4/4_1_04_mixed_spectrum_propagation.py"
+  },
+  {
+    "notebook": "4.2",
+    "number": 1,
+    "title": "Distinguish amplitude decay length from intensity decay length",
+    "section": "How far does the field extend?",
+    "file": "chapter_4/4_2_01_decay_lengths.py"
+  },
+  {
+    "notebook": "4.2",
+    "number": 2,
+    "title": "Follow one order continuously through grazing",
+    "section": "Follow one order through grazing",
+    "file": "chapter_4/4_2_02_grazing_transition.py"
+  },
+  {
+    "notebook": "4.2",
+    "number": 3,
+    "title": "Separate real normal scalar flux from a reactive component",
+    "section": "Does decay mean energy is absorbed?",
+    "file": "chapter_4/4_2_03_reactive_scalar_flux.py"
+  },
+  {
+    "notebook": "4.2",
+    "number": 4,
+    "title": "Check constant average normal flux while the near-field intensity changes",
+    "section": "Decay and energy flow for several orders",
+    "file": "chapter_4/4_2_04_period_averaged_flux.py"
+  },
+  {
+    "notebook": "5.1",
+    "number": 1,
+    "title": "Complete an incident wavevector with a groove-parallel component",
+    "section": "Let the incident wave travel along the grooves",
+    "file": "chapter_5/5_1_01_incident_three_components.py"
+  },
+  {
+    "notebook": "5.1",
+    "number": 2,
+    "title": "Test discrete x translation and continuous y translation",
+    "section": "What does the grating preserve?",
+    "file": "chapter_5/5_1_02_two_translation_symmetries.py"
+  },
+  {
+    "notebook": "5.1",
+    "number": 3,
+    "title": "Construct conical outgoing directions and check their common cone angle",
+    "section": "Explore the actual outgoing directions",
+    "file": "chapter_5/5_1_03_conical_order_directions.py"
+  },
+  {
+    "notebook": "5.1",
+    "number": 4,
+    "title": "Track the loss of propagating orders as groove-parallel incidence increases",
+    "section": "Move an order through the 3D boundary",
+    "file": "chapter_5/5_1_04_groove_component_cutoff.py"
+  },
+  {
+    "notebook": "5.2",
+    "number": 1,
+    "title": "Represent identical orders in k, spatial frequency and direction coordinates",
+    "section": "Direction cosines and Goodmans frequency convention",
+    "file": "chapter_5/5_2_01_one_order_three_scales.py"
+  },
+  {
+    "notebook": "5.2",
+    "number": 2,
+    "title": "Calculate the propagating spatial-frequency disk in different media",
+    "section": "Index and the spatial-frequency disk",
+    "file": "chapter_5/5_2_02_spatial_frequency_disk.py"
+  },
+  {
+    "notebook": "5.2",
+    "number": 3,
+    "title": "Compare 3D sphere projections and detector-plane intersections",
+    "section": "Compare a sphere projection with a plane",
+    "file": "chapter_5/5_2_03_sphere_projection_plane_intersection.py"
+  },
+  {
+    "notebook": "5.2",
+    "number": 4,
+    "title": "Verify Harvey and Ewald sphere equations for the same 3D orders",
+    "section": "Equivalent diffraction-coordinate pictures",
+    "file": "chapter_5/5_2_04_translated_sphere_residuals.py"
+  },
+  {
+    "notebook": "5.3",
+    "number": 1,
+    "title": "Construct a reciprocal basis for a nonorthogonal real-space lattice",
+    "section": "Two translation symmetries and two integers",
+    "file": "chapter_5/5_3_01_reciprocal_lattice_basis.py"
+  },
+  {
+    "notebook": "5.3",
+    "number": 2,
+    "title": "Classify a two-integer order lattice against the output propagation disk",
+    "section": "Two-dimensional diffraction orders",
+    "file": "chapter_5/5_3_02_two_dimensional_order_lattice.py"
+  },
+  {
+    "notebook": "5.3",
+    "number": 3,
+    "title": "Rotate direct and reciprocal lattices consistently",
+    "section": "Translate rescale and rotate the lattice",
+    "file": "chapter_5/5_3_03_rotate_lattice.py"
+  },
+  {
+    "notebook": "5.3",
+    "number": 4,
+    "title": "Propagate one evanescent two-dimensional order",
+    "section": "Follow an evanescent order into the output medium",
+    "file": "chapter_5/5_3_04_evanescent_lattice_order.py"
+  },
+  {
+    "notebook": "5.4",
+    "number": 1,
+    "title": "Normalize diffraction wavevectors using objective numerical aperture",
+    "section": "Normalize the diffraction wavevectors",
+    "file": "chapter_5/5_4_01_sigma_normalization.py"
+  },
+  {
+    "notebook": "5.4",
+    "number": 2,
+    "title": "Apply a circular angular collection aperture to order candidates",
+    "section": "Put source points and grating orders on the same axes",
+    "file": "chapter_5/5_4_02_collect_orders_with_na.py"
+  },
+  {
+    "notebook": "5.4",
+    "number": 3,
+    "title": "Distinguish moving a source point from widening a source disk",
+    "section": "Distinguish a source position from source size",
+    "file": "chapter_5/5_4_03_source_position_and_size.py"
+  },
+  {
+    "notebook": "5.4",
+    "number": 4,
+    "title": "Compare an assumed sine-condition pupil map with a flat propagation plane",
+    "section": "Supply the optical mapping to a physical pupil",
+    "file": "chapter_5/5_4_04_sine_mapping_vs_plane.py"
+  },
+  {
+    "notebook": "6.1",
+    "number": 1,
+    "title": "Integrate the real-field square over a finite detector exposure",
+    "section": "Time averaging and relative intensity",
+    "file": "chapter_6/6_1_01_finite_exposure_average.py"
+  },
+  {
+    "notebook": "6.1",
+    "number": 2,
+    "title": "Verify the square-law relation with a fixed reference",
+    "section": "Convert mean square into relative recorded intensity",
+    "file": "chapter_6/6_1_02_amplitude_intensity_scaling.py"
+  },
+  {
+    "notebook": "6.1",
+    "number": 3,
+    "title": "Check detector time-sampling convergence",
+    "section": "Numerically average one optical field",
+    "file": "chapter_6/6_1_03_time_quadrature_convergence.py"
+  },
+  {
+    "notebook": "6.1",
+    "number": 4,
+    "title": "Show that phase-distinct fields can have equal recorded intensity",
+    "section": "Read the measurement in reverse",
+    "file": "chapter_6/6_1_04_intensity_loses_phase.py"
+  },
+  {
+    "notebook": "6.2",
+    "number": 1,
+    "title": "Sample a tilted order at three detector locations",
+    "section": "Compare a field snapshot with the detector image",
+    "file": "chapter_6/6_2_01_three_detector_points.py"
+  },
+  {
+    "notebook": "6.2",
+    "number": 2,
+    "title": "Measure spatial phase while detector intensity remains uniform",
+    "section": "One order across a detector",
+    "file": "chapter_6/6_2_02_detector_phase_gradient.py"
+  },
+  {
+    "notebook": "6.2",
+    "number": 3,
+    "title": "Compare a uniform order with a finite detector-plane envelope",
+    "section": "Ideal plane waves and finite recorded profiles",
+    "file": "chapter_6/6_2_03_prescribed_detector_envelope.py"
+  },
+  {
+    "notebook": "6.2",
+    "number": 4,
+    "title": "Compare field intensity with flux normal to a detector",
+    "section": "Intensity versus normal energy flow",
+    "file": "chapter_6/6_2_04_intensity_and_normal_flux.py"
+  },
+  {
+    "notebook": "7.1",
+    "number": 1,
+    "title": "Evaluate the cross term in two-wave addition",
+    "section": "Add fields before squaring",
+    "file": "chapter_7/7_1_01_add_fields_before_squaring.py"
+  },
+  {
+    "notebook": "7.1",
+    "number": 2,
+    "title": "Compute mutual coherence from a sampled phase ensemble",
+    "section": "Mutual coherence and fringe visibility",
+    "file": "chapter_7/7_1_02_ensemble_mutual_coherence.py"
+  },
+  {
+    "notebook": "7.1",
+    "number": 3,
+    "title": "Separate amplitude imbalance from reduced mutual coherence",
+    "section": "The same visibility can have different causes",
+    "file": "chapter_7/7_1_03_visibility_balance_and_coherence.py"
+  },
+  {
+    "notebook": "7.1",
+    "number": 4,
+    "title": "Translate fringes by rotating a complex correlation",
+    "section": "EO phase control is not decorrelation",
+    "file": "chapter_7/7_1_04_eo_phase_translation.py"
+  },
+  {
+    "notebook": "7.2",
+    "number": 1,
+    "title": "Construct two grating-order vectors and verify their magnitudes",
+    "section": "Two orders and one optical field",
+    "file": "chapter_7/7_2_01_two_order_wavevectors.py"
+  },
+  {
+    "notebook": "7.2",
+    "number": 2,
+    "title": "Synthesize grating-order fringes and measure their period with an FFT",
+    "section": "Pitch is not always fringe period",
+    "file": "chapter_7/7_2_02_fft_fringe_period.py"
+  },
+  {
+    "notebook": "7.2",
+    "number": 3,
+    "title": "Predict fringe displacement when the detector moves downstream",
+    "section": "Move the detector and change phase",
+    "file": "chapter_7/7_2_03_detector_depth_phase.py"
+  },
+  {
+    "notebook": "7.2",
+    "number": 4,
+    "title": "Project conical-order interference onto a tilted detector",
+    "section": "Conical diffraction interference",
+    "file": "chapter_7/7_2_04_tilted_conical_detector.py"
+  },
+  {
+    "notebook": "7.3",
+    "number": 1,
+    "title": "Implement a Gaussian beam in its own rotated coordinate frame",
+    "section": "From ideal orders to finite beams",
+    "file": "chapter_7/7_3_01_rotated_gaussian_implementation.py"
+  },
+  {
+    "notebook": "7.3",
+    "number": 2,
+    "title": "Integrate detector-line overlap for two spreading order beams",
+    "section": "Separation spreading and spatial overlap",
+    "file": "chapter_7/7_3_02_overlap_quadrature.py"
+  },
+  {
+    "notebook": "7.3",
+    "number": 3,
+    "title": "Calculate finite-beam fringe phase and its local spatial frequency",
+    "section": "Coherent interference of finite beams",
+    "file": "chapter_7/7_3_03_local_fringe_phase.py"
+  },
+  {
+    "notebook": "7.3",
+    "number": 4,
+    "title": "Distinguish local fringe visibility from integrated beam overlap",
+    "section": "Visibility and finite-beam overlap",
+    "file": "chapter_7/7_3_04_local_visibility_and_overlap.py"
+  },
+  {
+    "notebook": "7.4",
+    "number": 1,
+    "title": "Hold order directions fixed and vary complex coefficients",
+    "section": "What information does C contain?",
+    "file": "chapter_7/7_4_01_fixed_directions_variable_coefficients.py"
+  },
+  {
+    "notebook": "7.4",
+    "number": 2,
+    "title": "Derive complex mask coefficients and their translation phase",
+    "section": "Where do complex coefficients come from?",
+    "file": "chapter_7/7_4_02_mask_translation_phase.py"
+  },
+  {
+    "notebook": "7.4",
+    "number": 3,
+    "title": "Recover solved complex scattering amplitudes from sampled exit fields",
+    "section": "Physical scalar grating coefficients",
+    "file": "chapter_7/7_4_03_physical_field_projection.py"
+  },
+  {
+    "notebook": "7.4",
+    "number": 4,
+    "title": "Apply the longitudinal flux factor for unequal exterior indices",
+    "section": "Complex coefficients versus diffraction efficiency",
+    "file": "chapter_7/7_4_04_coefficients_vs_efficiency.py"
+  },
+  {
+    "notebook": "8.1",
+    "number": 1,
+    "title": "Check the outgoing point Green response away from its source",
+    "section": "Helmholtz and wavelength",
+    "file": "chapter_8/8_1_01_green_helmholtz_residual.py"
+  },
+  {
+    "notebook": "8.1",
+    "number": 2,
+    "title": "Calculate distance-dependent Green amplitude and phase",
+    "section": "What changes between two points?",
+    "file": "chapter_8/8_1_02_point_to_point_response.py"
+  },
+  {
+    "notebook": "8.1",
+    "number": 3,
+    "title": "Implement and finite-difference-check the Green normal derivative",
+    "section": "Boundary reconstruction needs normal derivatives",
+    "file": "chapter_8/8_1_03_normal_derivative.py"
+  },
+  {
+    "notebook": "8.1",
+    "number": 4,
+    "title": "Reconstruct a source-free interior field from a closed boundary",
+    "section": "How can the boundary reconstruct the field?",
+    "file": "chapter_8/8_1_04_closed_boundary_green_identity.py"
+  },
+  {
+    "notebook": "8.2",
+    "number": 1,
+    "title": "Integrate a rectangular aperture using explicit two-dimensional Simpson weights",
+    "section": "Try the RS I patch sum",
+    "file": "chapter_8/8_2_01_rectangular_rs_integral.py"
+  },
+  {
+    "notebook": "8.2",
+    "number": 2,
+    "title": "Refine the aperture quadrature independently of observation sampling",
+    "section": "Numerical convergence of the RS I patch sum",
+    "file": "chapter_8/8_2_02_rs_quadrature_convergence.py"
+  },
+  {
+    "notebook": "8.2",
+    "number": 3,
+    "title": "Rebuild a spherical Green response from propagating and evanescent spectra",
+    "section": "Weyl bridge from patches to plane waves",
+    "file": "chapter_8/8_2_03_weyl_plane_wave_integral.py"
+  },
+  {
+    "notebook": "8.2",
+    "number": 4,
+    "title": "Compare a direct RS aperture integral with FFT angular-spectrum propagation",
+    "section": "Spatial patches and Fourier components describe the same propagation",
+    "file": "chapter_8/8_2_04_rs_integral_vs_asm.py"
+  },
+  {
+    "notebook": "8.3",
+    "number": 1,
+    "title": "Implement two-dimensional ASM using FFT frequencies and the outgoing branch",
+    "section": "Full propagation and the ASM multiplier",
+    "file": "chapter_8/8_3_01_two_dimensional_asm_fft.py"
+  },
+  {
+    "notebook": "8.3",
+    "number": 2,
+    "title": "Evaluate Fresnel propagation by a spatial integral and a Fourier multiplier",
+    "section": "Fresnel keeps quadratic path variation",
+    "file": "chapter_8/8_3_02_fresnel_integral_vs_fft.py"
+  },
+  {
+    "notebook": "8.3",
+    "number": 3,
+    "title": "Recover rectangular-aperture Fraunhofer diffraction with physical Fourier scaling",
+    "section": "Fraunhofer omits aperture-coordinate curvature",
+    "file": "chapter_8/8_3_03_fraunhofer_rectangle_fft.py"
+  },
+  {
+    "notebook": "8.3",
+    "number": 4,
+    "title": "Compare full RS I and approximate spatial kernels at common points",
+    "section": "What does the kernel contribute at P?",
+    "file": "chapter_8/8_3_04_kernel_approximation_errors.py"
+  },
+  {
+    "notebook": "9.1",
+    "number": 1,
+    "title": "Construct a complex exit field from a prescribed mask and illumination",
+    "section": "Build the exit field from a mask and illumination",
+    "file": "chapter_9/9_1_01_mask_and_incident_field.py"
+  },
+  {
+    "notebook": "9.1",
+    "number": 2,
+    "title": "Compare two masks with different complex transmission but simple geometry",
+    "section": "What defines the complex exit field?",
+    "file": "chapter_9/9_1_02_amplitude_and_phase_masks.py"
+  },
+  {
+    "notebook": "9.1",
+    "number": 3,
+    "title": "Separate periodic transmission coefficients from a tilted exit field",
+    "section": "The field and its reference-plane convention",
+    "file": "chapter_9/9_1_03_bloch_carrier_and_fft.py"
+  },
+  {
+    "notebook": "9.1",
+    "number": 4,
+    "title": "Extract a physical exit field and move its reference plane",
+    "section": "A physical model supplies the exit field",
+    "file": "chapter_9/9_1_04_physical_exit_reference.py"
+  },
+  {
+    "notebook": "9.2",
+    "number": 1,
+    "title": "Recover complex Fourier coefficients with the sampling-origin phase correction",
+    "section": "Sample one period and recover its coefficients",
+    "file": "chapter_9/9_2_01_fft_origin_correction.py"
+  },
+  {
+    "notebook": "9.2",
+    "number": 2,
+    "title": "Demonstrate that a perfect FFT roundtrip can hide an aliased field",
+    "section": "What if we use only eight points?",
+    "file": "chapter_9/9_2_02_aliasing_collision.py"
+  },
+  {
+    "notebook": "9.2",
+    "number": 3,
+    "title": "Track FFT-bin changes when the window contains several periods",
+    "section": "Sample more than one complete period",
+    "file": "chapter_9/9_2_03_multiple_period_windows.py"
+  },
+  {
+    "notebook": "9.2",
+    "number": 4,
+    "title": "Recover a two-dimensional complex order lattice with FFT2",
+    "section": "Repeat the coefficient check in two dimensions",
+    "file": "chapter_9/9_2_04_two_dimensional_fft_coefficients.py"
+  }
+]

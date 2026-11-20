@@ -1,0 +1,15 @@
+name: grating-book
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - jupyterlab
+  - pip:
+      - numpy==2.5.5
+      - scipy==1.18.1
+      - matplotlib==3.11.2
+      - plotly==7.1.0
+      - ipywidgets==8.1.9
+      - ipykernel==7.4.0
+      - jupyter-server==2.21.1

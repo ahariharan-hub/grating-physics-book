@@ -1,0 +1,57 @@
+# -*- coding: utf-8 -*-
+"""0.5, worked example 1: Discretize an absorbing grating geometry.
+
+Companion topic: What physical inputs select the field?.
+Vacuum wavelength and lengths um. Normal-incidence scalar/TE model; air exteriors; outgoing -z; illustrative n+i*kappa.
+Run the entire file in Python or Spyder, or execute its # %% sections in order.
+Change INPUT PARAMETERS to investigate the result. No figures are saved automatically.
+"""
+from pathlib import Path
+import sys
+import numpy as np
+
+# Locate only the plotting/path helper; the numerical implementation is below.
+_scripts_directory = str(Path(__file__).resolve().parents[1])
+if _scripts_directory not in sys.path:
+    sys.path.insert(0, _scripts_directory)
+from _common import pyplot, finish
+
+# %% INPUT PARAMETERS
+wavelength = 0.633
+period = 1.5
+opening_width = 0.75
+thickness = 0.3
+absorber_index = 1.5
+extinction = 0.8
+M = 8
+show_plot = True
+
+# %% SETUP: coordinates, sampling and constants
+x = np.linspace(-period, period, 401)
+z = np.linspace(-1.4 * thickness, 0.4 * thickness, 151)
+
+# %% NUMERICAL CALCULATION
+local_x = (x / period + 0.5) % 1 - 0.5
+opening = abs(local_x) < opening_width / (2 * period)
+layer_index = np.where(opening, 1.0, absorber_index + 1j * extinction)
+in_layer = (z[:, None] > -thickness) & (z[:, None] < 0)
+index = np.where(in_layer, layer_index[None, :], 1.0)
+
+# %% CHECK AND INTERPRET
+assert np.all(index[0] == 1.0) and np.all(index[-1] == 1.0)
+assert np.all(index.imag >= 0)
+print('Index is a material property; it is not the optical field amplitude.')
+
+# %% GRAPHICS
+if __name__ == '__main__':
+    plt = pyplot(show_plot)
+    figure, axes = plt.subplots(1, 2, figsize=(10, 4), layout='constrained')
+    for ax, values, title in zip(axes, [index.real, index.imag], ['Refractive index Re(n)', 'Extinction Im(n)']):
+        image = ax.imshow(values, origin='lower', aspect='auto', extent=[x[0], x[-1], z[0], z[-1]])
+        ax.set(xlabel='x (um)', ylabel='z (um)', title=title)
+        figure.colorbar(image, ax=ax)
+
+    # %% NUMERICAL SUMMARY
+    print('0.5 - Discretize an absorbing grating geometry')
+    print('Numerical check passed. Read CHECK AND INTERPRET before changing parameters.')
+    finish(figure, show_plot)

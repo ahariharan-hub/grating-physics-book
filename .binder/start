@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+# MyST sends paths relative to its project root, not to the Git repository root.
+cd "${REPO_DIR:-/home/jovyan}/Optics/Grating_Physics"
+exec "$@" --ServerApp.root_dir="$PWD"

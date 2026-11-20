@@ -1,0 +1,113 @@
+NOTEBOOK 7.3A — IMPLEMENTATION AND VALIDATION
+24 October 2026
+
+Repository: ahariharan-hub/Py_Code_Projects
+Branch: Grating_physics
+Inspected HEAD/reference: 18b6b8e8ea0675cdf41faf4b9e93606f0e9c4c9e
+The working tree was clean at implementation start. No commit or push performed.
+
+CREATED FILES (relative to Optics/Grating_Physics)
+
+7_3_Finite_Diffraction_Beams_and_Experimental_Recombination.ipynb
+wave_optics/finite_grating_beams.py
+wave_optics/finite_grating_beams_view.py
+supplement/tests/test_finite_grating_beams.py
+supplement/validation/Notebook_7_3A_Validation.txt
+
+No existing notebooks, helpers, tests or physics backends were modified.
+SHA-256 comparisons against a preimplementation snapshot verified preservation.
+
+MODEL AND REUSE
+
+The incident boundary field is exp(-x^2/w0^2) exp(i*k_x_i*x), peak amplitude 1.
+A centered, 50%-open ideal binary-amplitude mask prescribes its transmitted
+boundary. binary_transmission.binary_transmission_field supplies the mask;
+binary_transmission_coefficients identifies its nonzero ideal harmonics.
+
+Propagation reuses scalar_propagation.transfer_function and spectrum_geometry.
+The existing utility propagates into +z at positive distance. Here its distance
+is downward depth s=-z: signed transmitted k_z is minus its outgoing root, giving
+exp(i*k_z*z)=exp(i*sqrt(k^2-k_x^2)*s). Evanescent components decay.
+The new 1D FFT orchestration does not introduce a second dispersion/ASM kernel.
+
+The default is lambda=1 um, d=4 um, w0=8 um, normal incidence, pair (0,+1).
+The explorer computes depths 0..80 um at 1 um steps; detector motion reuses the
+computed complex maps. It has six parameter controls plus one reset button.
+The illustration above the grating is a geometric envelope extension; only its
+boundary and the transmitted field below the grating are numerically propagated.
+
+APPROXIMATIONS AND NUMERICAL DIAGNOSTICS
+
+The model is scalar, monochromatic and invariant along y. It prescribes a
+thin-mask field, not an electromagnetic scattering/efficiency solution.
+Integrated transverse intensity is per unit y length, not total optical power.
+
+The default grid has 64 samples per period, half-cell sample locations avoiding
+mask jumps, and a padded power-of-two domain at least 512 um wide and at least
+12*w0+5*s_max. The displayed maps crop x to +/-48 um. FFT spectra are unshifted
+raw NumPy weights and preserve complex phase. Inverse FFT and propagation use
+the same sampling convention.
+
+Approximate order windows are disjoint half-open intervals between neighboring
+ideal-center midpoints, clipped to strictly propagating |k_x|<k. Even nonzero
+orders of this particular 50%-open mask have zero ideal coefficients and are
+not offered as strong isolated beams. Filtering is numerical, not modeled
+Fourier-filter hardware. Strongly overlapping replicas cannot be attributed
+uniquely to orders by this prescription.
+
+Warnings cover an isolated Gaussian replica midpoint amplitude above 0.01,
+windows touching the grazing cutoff, outer-domain intensity fraction above
+1e-4, and significant near-grazing spectrum whose estimated travel can reach
+the FFT boundaries. A small edge fraction alone is not a wraparound guarantee.
+Padding and sampling comparisons remain necessary for quantitative work.
+
+The overlap O is the normalized integral of |U_m||U_n|, not mutual coherence.
+It integrates the entire padded x grid and is undefined for zero-norm fields.
+It is not assumed monotonic for arbitrary parameters. Propagating-spectrum
+intensity norms and normal scalar flux are conserved; the full boundary field
+also contains evanescent norm which decays without transporting normal flux.
+
+VALIDATION
+
+12 dedicated tests cover all ten requested numerical topics and widget behavior:
+Gaussian boundary, binary mask, peak centers, spectral-width scaling, signed
+propagation and evanescent decay, analytical single-bin plane-wave propagation,
+filter disjointness/cutoff, reconstruction/cross-term identities, overlap bounds
+and phase invariance, Parseval/flux, resolution and padding comparisons, warning
+states, input validation, control updates, caching, reset, artist identity,
+idempotent cleanup and three repeated notebook-owned explorer constructions.
+
+Combined run: 47 tests passed (new tests plus existing scalar-propagation,
+binary-transmission and ideal-order-interference regressions). Final dedicated
+tests were repeated after the conservative near-grazing warning was added.
+The complete notebook executed from a fresh Jupyter kernel with real rendering
+and all three small calculations. Notebook structure and local links validated.
+The initial rendering was visually inspected; selected spectral-window shading
+was then added and checked by the final execution and widget tests.
+
+Representative default results:
+O(0)=approximately 1; O(60 um)=0.181325; O(80 um)=0.058559.
+FFT width=512 um; dx=0.0625 um; delta_k_x=0.01227185 rad/um.
+Gaussian midpoint amplitude=5.17e-5.
+Outer-edge intensity fraction over the sampled default maps=2.45e-24.
+
+Convergence tests double samples per period and separately double minimum padded
+width. Selected-field ROI intensity differences are required below 1% for
+resolution and 1e-4 relative for padding, with overlap changes below 0.002.
+These are representative checks, not a certification of every parameter value.
+
+Core prose: approximately 1,532 words, excluding equations, references and
+expandable material. Expandable answers/background: approximately 621 words.
+
+LIMITATIONS AND STAGE 7.3B
+
+The returned data retain two complex fields [order,depth,x], full unfiltered field,
+their sum/cross term, windows, complex spectra, signed wavevectors, coordinates,
+configuration and units/sign metadata. These are available for Setup 1 in 7.3B.
+No mirror reflection, alignment, recombination transform, lens imaging, Abbe
+calculation, source integration, RCWA/FMM or vector scattering was implemented.
+
+Dependencies are the course's existing NumPy/SciPy/Matplotlib/ipywidgets stack;
+fresh-kernel verification uses Jupyter/nbclient. No dependency installation or
+environment modification was required. Original notebooks/navigation were
+preserved; the new lesson links backward and describes the planned 7.3B stage.

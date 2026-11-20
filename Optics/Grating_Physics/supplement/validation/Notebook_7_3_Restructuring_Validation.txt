@@ -1,0 +1,535 @@
+Notebook 7.3 restructuring — implementation and validation
+24 October 2026
+
+Repository: ahariharan-hub/Py_Code_Projects, branch Grating_physics
+Inspected HEAD: 7709cf9e30c7c5cd7a83f3567b2338f7fd1f97c3
+No commit or push.
+
+IMPLEMENTATION
+
+7_3_Finite_Diffraction_Beams_and_Experimental_Recombination.ipynb
+now teaches prescribed analytical Gaussian beams in four numbered sections:
+finite beams; separation, spreading and spatial overlap; coherent interference;
+preparation for mirror recombination. Directions are introduced briefly in
+Section 1; coordinate construction and detailed overlap mathematics are optional.
+The explorer precedes detailed mathematics, followed by three short executable
+calculations, prediction exercises, expandable answers and a final checkpoint.
+Core prose: 1,763 whitespace-delimited words (inline mathematics retained;
+displayed equations, expandable answers/background and references excluded).
+Optional background prose/formulas: 1058 whitespace-delimited words, including mathematical notation and optional headings.
+Expandable exercise/checkpoint answers are additional supplementary material.
+
+Appendix_2_Numerical_Diffraction_of_Finite_Grating_Illumination.ipynb
+contains the former numerical lesson. All FIVE original code cells are preserved
+verbatim, including imports, owned explorer construction and calculations.
+Teaching text is preserved with appendix title, motivation and navigation edits.
+A prominent NH-7.3.1 status section distinguishes full-field convergence,
+selected-band convergence and isolated-order interpretation, and records the
+verified high-order sampling bias and near-grazing padding sensitivity.
+Runtime numerical warnings remain supplied by the unchanged numerical helper.
+The original numerical validation report is preserved; it does not certify all
+slider settings. No numerical hardening is claimed by this migration.
+
+NEW HELPERS
+
+wave_optics/gaussian_order_beams.py
+  Normal incidence sets k_ix=0; m*2*pi/d sets the central transverse wavevector.
+  Each beam uses helmholtz_families.gaussian_beam after a right-handed rotation:
+    e_l=(sin(theta),0,-cos(theta)); e_q=(-cos(theta),0,-sin(theta)).
+  Coordinates (r.e_q, y, r.e_l) rotate envelope and all phases consistently.
+  Waist centres coincide at the origin, but each waist plane is perpendicular
+  to its own axis. The boundary is NOT a finite Gaussian multiplied by a mask.
+  The axisymmetric helper is sampled at y=0; this is not 2D slit scattering.
+  Equal coefficients are assigned; no grating efficiencies are calculated.
+
+  The carrier phase gradient is exactly k*e_l. The full phase gradient at the
+  waist centre is (k-1/z_R)*e_l because the Gaussian includes negative Gouy phase.
+  Its direction agrees with the transmitted wavevector; its magnitude has the
+  expected paraxial correction. Positive curvature phase and negative Gouy
+  phase are preserved under the exp(-i*omega*t) convention.
+
+  The API requires w0/lambda >= 3 and axes within 30 degrees of global -z.
+  Local paraxiality and detector obliquity are distinct restrictions.
+  Nonpropagating, grazing and out-of-scope axes are rejected.
+  Spatial overlap is the normalized magnitude integral on the detector's y=0
+  line. It is not full XY overlap, optical power, mutual coherence or visibility.
+  A zero arm gives NaN overlap and zero cross term; magnitude normalization
+  protects nonzero weak-arm overlap from simple strength-induced underflow.
+
+wave_optics/gaussian_order_beams_view.py
+  One explorer: wavelength 0.6..1.2 um, pitch 4..8 um, waist 4..12 um,
+  propagating order pair, detector depth 0..80 um and relative phase.
+  The minimum exposed w0/lambda is 3.33; divergence <=0.0955 rad.
+  Maps show individual intensities, coherent sum and signed cross term, with
+  physically equal x/z plotting scales, XY detector intersection, profile and
+  detector-line overlap. Axes are labelled as axes, not hard beam boundaries.
+  Individual/combined/cross scales are fixed at 0..1, 0..4 and -2..2.
+  These bounds follow the assigned unit waist amplitudes and avoid saturation.
+  Maps use 81 depths and 1,601 x samples from -80 to 80 um; visible crop +/-64.
+  Geometry/pair changes rebuild analytical fields, phase changes reuse fields,
+  and detector changes reuse fields and intensity maps. PNG refresh is still
+  needed for a displayed control update. Reset produces one update.
+  Retained artists, owned observers and explicit close support reexecution.
+  No FFT/ASM field calculation or spectral filtering operates this explorer.
+
+EXECUTED CHECKS
+
+Focused pytest suite:
+  supplement/tests/test_gaussian_order_beams.py
+  supplement/tests/test_finite_grating_beams.py
+  supplement/tests/test_helmholtz_families.py
+  41 tests passed. New coverage includes Gaussian widths and Rayleigh range,
+  Gouy/curvature signs, five rotated axes, full and carrier phase gradients,
+  coherent addition, zero arms, phase-invariant overlap, unequal strengths,
+  broad-beam plane-wave limit, forbidden parameter handling, FFT-independent
+  calculation, control updates/caching, one-update reset, invalid-pair fallback,
+  close and three successive notebook display-cell executions.
+  Widget population stays bounded across repeated execution and returns to its
+  baseline after close. Existing numerical physics tests are unchanged.
+  The existing numerical widget test has one necessary migration edit: it reads
+  its unchanged builder cell from Appendix 2 instead of the analytical notebook.
+
+Fresh, independent Jupyter kernels via nbclient (not a shared script namespace):
+  Notebook 7.3: five code cells passed; approximately 7.21 seconds incl. startup.
+  Appendix 2: five code cells passed; approximately 7.05 seconds incl. startup.
+  Each explorer was closed in an added validation-only cleanup cell.
+  Executed copies were written to temporary storage, not over source notebooks.
+
+Analytical default: lambda=1, d=4, w0=6 um, pair (0,1), coefficients (1,1).
+  Rayleigh range: 113.097335529 um.
+  Central wavevectors: (0,0,-6.283185307), (1.570796327,0,-6.083668014) rad/um.
+  O_line at depth 0,40,80 um: 0.99973827, 0.27906642, 0.02174934.
+  Intensity identity maximum residual: 1.7763568394e-15.
+  Fixed pi/2 phase leaves overlap unchanged; a blocked arm has zero cross term.
+  All 81 depths: doubling x sampling and extending the integration line from
+  +/-80 to +/-160 um leave default overlap unchanged to <=1e-12.
+  Broad-beam check w0=10,000 um, x in [-2,2], depths 0,10 um: complex fields
+  agree with the prescribed plane-wave pair within 1e-7 absolute tolerance;
+  combined intensity within 4e-7. This is a LOCAL limit, not global equivalence.
+
+Structured analytical boundary check:
+  lambda in {0.6,1.2}, d in {4,8}, w0 in {4,12} um;
+  pairs (0,1) and the most separated offered symmetric pair: 16 cases,
+  each at all 81 detector depths. Maximum overlap difference on refinement
+  was 5.56e-16; on line extension 4.45e-16. Maximum combined intensity was 4.
+  These are specified checks, not exhaustive certification of all slider states.
+
+Preserved numerical calculations in the appendix:
+  Retained-field reconstruction residual: 1.2412670766e-16.
+  Intensity identity residual: 2.7755575616e-16.
+  Known displaced-Gaussian line overlap: 0.04393693983939, unchanged by pi/2.
+  Existing numerical warnings and all original numerical tests still pass.
+
+Rendering/navigation:
+  Actual PNGs from the analytical default and symmetric-pair/phase setting were
+  rendered headlessly. The default figure was visually inspected for field
+  direction, detector location, readable labels, scales and clipping.
+  Notebook schemas and local file links were checked.
+  The analytical lesson links to 0.2, 1.2, 2.3, 7.1, 7.2 and Appendix 2.
+  Appendix 2 links back to the analytical lesson and existing prerequisites.
+  Previous Chapter 0–7.2 notebooks are preserved, so their source navigation
+  was not edited. No link is invented for an unimplemented mirror notebook.
+
+PRESERVATION
+
+Hash comparison against 169 preexisting optics source/notebook/report files:
+only the target 7.3 notebook and the numerical test's notebook-path migration
+changed. finite_grating_beams.py, finite_grating_beams_view.py,
+helmholtz_families.py, all previous notebooks and Notebook_7_3A_Validation.txt
+are unchanged. No mirrors, lenses, Abbe imaging, RCWA/FMM, statistical
+illumination or unrelated backend changes are included.
+
+LIMITS / FRONTEND CHECKS STILL PENDING
+
+Live browser/Jupyter interaction was not manually verified. Kernel execution,
+real Matplotlib PNG rendering and Python-side widget callbacks were exercised;
+they do not certify a particular frontend's widget manager, MathJax rendering,
+responsive layout, slider dragging or displayed reset behavior. Inspect those
+in the user's Jupyter frontend. Very fine spatial fringes may be limited by
+screen resolution even when numerical point samples are adequate.
+
+The analytical model is paraxial and prescribed. Detector-line overlap is an
+explicit approximation. No agreement with FFT/ASM across general parameters,
+rigorous grating diffraction or mirror-recombination behavior is claimed.
+The appendix retains the NH-7.3.1 numerical limitations for future hardening.
+
+
+3D VISUALIZATION FOLLOW-UP
+
+The primary analytical explorer now shows 3D Gaussian-radius shells emerging
+from a grating reference plane, central propagation arrows, and a movable XY
+detector plane colored by coherent combined intensity. The adjacent XY map
+shows the same physical plane at finer sampling. Profiles and overlap remain
+below it. The original four xz maps are in an optional expandable widget panel,
+rendered only when open and dirty. All views share the existing controls.
+
+The beam shells mark rho=w(ell), i.e. 1/e^2 intensity relative to each local
+on-axis intensity. They are display contours, not hard beam boundaries.
+Their display mesh is clipped to -80<=z<=0, without truncating any field.
+Grating lines mark repetition, not solved slit boundaries. The camera uses
+orthographic projection and box proportions consistent with physical units.
+The PNG view uses a fixed camera; mouse orbit is not provided.
+
+The full 3D analytical fields are evaluated on an 801x161 detector grid,
+x in [-64,64], y in [-32,32] um. The small-cell intensity averages on the 3D
+surface reduce display clutter; the neighboring XY map retains finer samples.
+The fixed common intensity scale is 0..4. The rendered detector patch is a
+finite display window, not an aperture imposed on the beams.
+
+Geometry/pair changes update retained contour and direction artists. A detector
+move computes only the new XY plane while reusing the existing xz stack.
+Phase changes reuse both complex XY fields. Explicit close releases the new
+plane arrays, figures, optional-panel observer and owned widgets.
+
+Five additional parametrized checks bring the focused suite to 41 passing tests:
+three contour rotations verify radius and half-space clipping; one checks the
+XY central slice against the existing xz field, phase caching, detector movement,
+and arrow direction; one verifies lazy optional-panel rendering. The prior
+reset, close and three-execution widget population checks still pass.
+Both notebooks passed again in separate fresh Jupyter kernels after the 3D edit.
+Actual default and symmetric-beam PNGs were rendered and visually inspected.
+Live frontend/MathJax/widget-manager verification remains pending.
+
+The Gaussian physics helper, FFT/ASM helpers, Appendix 2 and earlier notebooks
+are unchanged by this follow-up. The detector-line overlap definition and values
+are unchanged; no full-XY-overlap or new physical solver is claimed.
+Restart the existing notebook kernel and Run All to load the revised helper.
+No commit or push.
+
+
+COMPACT CONTROLS, INCIDENT BEAM AND DETECTOR DISPLAY FOLLOW-UP
+
+The control panel now has two aligned, wrapping groups (beam/grating and
+orders/detector). Short labels use a fixed 90px description column and full-width
+sliders. Reset sits beside a one-line status readout with angles, Rayleigh range
+and line overlap. Long assumptions remain in the lesson's optional explanation.
+The primary figure height decreased from 10 to 7.5 inches; extra maps remain
+optional. Browser responsive layout still requires manual frontend checking.
+
+A green normal-incidence Gaussian contour occupies 0<=z<=32 um above the
+grating, with its arrow toward -z. It uses the same waist scale and Gaussian
+width law, with its waist at the origin. This is a prescribed reference input;
+it does not establish scattering efficiencies or input/output power balance.
+Outgoing fields and overlap calculations are unchanged.
+
+The detector now uses a dark sensor background, subtle frame and an orange/
+yellow false-colour signal palette. Both detector views retain a fixed linear
+0..4 relative intensity normalization; the same color map is used on the 3D
+plane and XY image. The y=0 profile guide is a thin dashed line. This is display
+colour, not a wavelength-to-visible-colour mapping: the default 1 um is infrared.
+No camera response, noise, DN conversion or detector saturation was introduced.
+
+Focused suite: 43 tests passed in 17.64 seconds, including the incident contour,
+propagation arrow, compact control configuration and monotonic palette brightness.
+Both notebooks executed again in separate fresh kernels (7.63 and 8.22 seconds,
+including startup). The final detector PNG was visually inspected. Widget reset,
+cache behavior, repeated execution and close checks still pass. No live browser
+frontend validation is claimed. No commit or push.
+
+
+SQUARE GEOMETRY FOLLOW-UP
+
+The grating reference patch and XY detector are now both square, x/y +/-64 um.
+The 3D view spans 128 um on each axis (z from -80 to +48 um), with a cubic box
+and equal physical scales. The XY detector map uses equal aspect and an
+801x321 grid; its y spacing remains 0.4 um. Its central line is unchanged.
+The 3D surface uses 8-by-16 sample-cell averages for a compact display mesh.
+The square patches remain display windows rather than imposed apertures.
+The incident beam and short grouped controls remain in place.
+All 43 focused tests passed again, including equal-range/cubic-box checks.
+Notebook 7.3 executed in a fresh kernel in 8.46 seconds including startup.
+The final square false-colour detector figure was visually inspected.
+No physics helper changes, commits or pushes.
+
+
+LIVE 3D INTERACTION RESTORATION
+
+The main displayed figure is now a live plotly.graph_objects.FigureWidget,
+using the Plotly 5.22.0 widget technology already used in Notebook 7.2.
+It replaces the PNG as the main UI output. Rotate by dragging; the camera
+controls support zoom and pan. Hover gives detector and profile values.
+The square XY detector, cubic 3D box, incident contour, output contours,
+false-colour signal, compact control groups and short readout are retained.
+
+New helper: wave_optics/gaussian_order_interactive_view.py.
+This is a visualization adapter reading the existing cached analytical fields.
+No Gaussian or diffraction physics is duplicated. Plotly mesh traces use the
+same clipped radius contours and direction segments as the export view.
+Updates retain trace identities. Stable layout/scene uirevision values preserve
+the camera across phase, depth, waist, wavelength, pitch and order changes;
+Reset restores the default camera. The main view no longer renders a PNG on
+control changes. The Matplotlib figure remains available for static export;
+only optional xz-panel rendering uses PNG within the displayed experiment.
+
+Regression coverage verifies that the displayed object is a FigureWidget,
+scene drag mode is orbit, physical ranges are cubic, simulated camera state
+survives control changes, trace identities remain stable, detector data agree
+with the analytical arrays, and reset restores the starting camera.
+Close/repeated-execution tests cover the new owned widget as well.
+
+Browser verification was attempted with the computer-use surface inventory,
+but no enabled browsers or apps were available. Actual mouse/toolbar actions
+in a live frontend therefore remain unverified. Kernel widget construction,
+serialization and callback tests are independent of that frontend check.
+Restart the notebook kernel and Run All to replace the old PNG output and load
+the new helper. This section supersedes the earlier fixed-camera limitation.
+No commit or push.
+
+Executed validation: 44 focused tests passed in 22.97 seconds. Both notebooks passed fresh-kernel execution again (8.17 and 7.00 seconds including startup).
+
+
+FRINGE-SPACING VISUALIZATION
+
+A cyan ruler on the detector shows the nominal carrier spacing d/|n-m|.
+A purple ruler on the profile shows the local relative-phase-gradient length
+near strongest useful overlap. An expandable Fringe spacing panel compares
+actual Gaussian intensity with the same two intensity envelopes carrying a
+linear nominal relative phase, matched at that reference point. A second plot
+compares local spacing across x with the nominal constant. Changing phase
+moves the patterns without changing the spacing diagnostic or its cache.
+No additional experiment controls were introduced; the live 3D camera remains.
+
+New diagnostic helper: wave_optics/gaussian_fringe_diagnostics.py.
+It calculates unwrapped arg(conj(U_m)*U_n) and its sampled spatial gradient,
+then Lambda_local=2*pi/abs(gradient). The numerical derivative is independently
+checked against the analytic derivative of the rotated Gaussian phase.
+This is a local phase-gradient length, not a peak-to-peak measurement: envelope
+variation and phase curvature can displace neighboring intensity maxima.
+The nominal ruler is a carrier-based reference, not a measured fringe interval.
+
+Display masks require envelope intensity >=1% of its detector-line peak,
+cross-term amplitude >=0.1% of that peak, amplitude-balance visibility >=0.1,
+and a finite nonzero phase gradient. These are explicit display choices, not
+a noise threshold or coherence classification. With no useful overlap, the
+rulers and spacing curves are hidden and the panel title explains why.
+
+Verified default pair (0,+1), d=4 um, wavelength=1 um, waist=6 um:
+nominal spacing 4 um. At the strongest-overlap sampled x, local spacing is
+4.502649 um at 40 um depth and 5.999758 um at 80 um. Thus curvature corrections
+are not always small within this exercise. Pair (-1,+1) has nominal 2 um.
+The broad-waist limit approaches 4 um to the tested 1e-6 um tolerance.
+
+Tests cover exact plane-wave spacing, fixed-phase invariance, missing-arm
+masking, analytic Gaussian derivatives, the broad-beam limit, ruler lengths,
+order-pair changes, phase-only caching and hiding rulers for negligible overlap.
+Fresh-kernel notebook execution passed again (8.37 seconds incl startup);
+the unchanged appendix also passed (6.93 seconds). Actual browser/front-end
+inspection of the new rulers/panel remains pending; no browser was available
+in the prior surface inventory. All previous physics helpers are unchanged.
+No commit or push.
+
+Final focused suite: 47 tests passed in 27.09 seconds.
+
+
+FITTED SQUARE DISPLAY WINDOWS
+
+The displayed detector and grating reference patches no longer use a fixed
+128-by-128 um window. Fitted bounds contain both beam axes with two estimated
+Gaussian radii on each side, plus a 10% margin. The detector plane estimate uses
+w(ell)/cos(theta) for its x footprint and w(ell) for y. The square span is rounded
+up to multiples of 3.2 um; its x centre follows the beam positions. This is a
+visualization crop, not a physical aperture or calculated instrument size.
+
+Default (0,+1), lambda=1, d=4, w0=6 um, depth=40 um:
+  displayed detector and grating side = 41.6 um, versus the old 128 um;
+  the scene cube has 80 um equal physical spans on all three axes.
+The window expands as detector depth, angular separation or waist increase.
+The cubic scene includes the incident segment and the path to the selected
+observation plane, with at least a short output segment at depth zero.
+Contours are clipped only for illustration. Direction arrows fit the shown
+segment. The physical fields and grating-order assignments are unchanged.
+
+Detector sampling adapts to the crop at dx=0.1 um and dy=0.4 um. Sample counts
+remain compatible with the 8-by-16-cell 3D display averaging. The default grid
+is 417-by-105 points. The fixed full-line xz/overlap stack is NOT resized or
+renormalized. Phase-only updates reuse the fitted detector fields. The live
+Plotly camera and trace identities remain preserved; square map ranges and
+profile ranges follow the fitted window on geometry/depth changes.
+
+Tests verify the default size, growth with depth, matched detector-line fields,
+square patches, cubic equal-scale scene ranges, sample-grid alignment and
+unchanged overlap. Kernel/callback checks do not replace live frontend review.
+No Gaussian or FFT/ASM backend changes, commits or pushes.
+
+Validation: 48 focused tests passed in 24.24 seconds; both notebooks executed in fresh kernels (7.86 and 7.08 seconds including startup).
+
+
+SECTION 2 AND 3 VISUAL AIDS
+
+Section 2 now contains a compact, two-panel annotated static guide:
+normal incidence, the actual default 0/+1 transmitted directions, the 14.48-degree
+angle, tilted waist planes and a detector intersection; then the perpendicular
+local basis, projection of a point into ell/q coordinates and a right-angle cue.
+The plotted paths are direction arrows and labeled intensity contours, not hard
+beam boundaries. Both panels use y=0 and equal x/z physical units internally.
+
+Section 3 now shows actual analytical detector profiles at depths 0, 40, 80 um
+on shared axes and intensity scales. Individual intensities, axis separation,
+local transverse radii and the product |U0||U1| illustrate separation versus
+spreading. Green shading is the overlap integrand; displayed O_line still uses
+the complete -80..80 um integration line, rather than the visible crop.
+The plotted radii are perpendicular to each beam axis, not oblique detector widths.
+
+Reusable helper: wave_optics/gaussian_lesson_figures.py. It reuses the existing
+analytical model and introduces no additional controls, widgets or solver.
+The notebook uses one-line figure-display calls at the relevant reading points.
+The primary interactive Plotly explorer is unchanged. The two new teaching aids
+are explicitly static images, so they do not replace or disable live 3D rotation.
+
+Both figures were rendered and visually inspected. Font warnings and vector-label
+math syntax were corrected; final rendering passed with warnings treated as errors.
+Fresh-kernel execution confirms that the two new cells produce embedded image/png
+outputs, rather than text-only Matplotlib figure representations. Notebook 7.3 now
+has seven teaching code cells; the migrated appendix retains its original five.
+No existing physics backends, prior notebooks or numerical appendix were changed.
+No commit or push.
+
+Validation: 48 focused tests passed in 18.85 seconds; fresh-kernel executions passed (Notebook 7.3: 7.28 s, Appendix 2: 6.32 s, including startup).
+
+
+LINKED SECTION 2/3 GUIDES
+
+The former fixed-default PNG cells now display owned ipywidgets.Image views
+connected to the same explorer. The existing explorer update path refreshes
+them; no additional controls or parameter observers are added. The images
+render lazily when their notebook cells are first executed, then update from
+the current wavelength, pitch, waist, selected order pair and detector depth.
+Redisplaying a guide reuses its widget and cached image.
+
+Section 2 uses the current order labels, angles, waist planes, detector line,
+field-intensity contours and local frame of the second selected order. Its
+contours reuse the explorer's cached analytical maps. The illustrative local
+projection follows the current geometry rather than the old +1 defaults.
+
+Section 3 uses the same cached individual intensity and overlap arrays. Its
+middle slice follows the selected detector; its outer slices are explicitly
+labelled fixed reference planes at depths 0 and 80 um. All three update with
+beam geometry. The shared x crop adapts to the selected beams, while the
+intensity scale remains common across slices.
+
+A fixed coefficient phase does not change individual intensities or magnitude
+overlap. Accordingly phase-only updates neither change nor rerender the guides.
+Interference phase effects remain visible in the main detector/fringe views.
+The full-line overlap definition and numerical fields are unchanged.
+
+GaussianLessonAids owns and closes its external section widgets when the
+explorer closes/reexecutes. Closed images are cleared, and the owner reference
+is released. Existing widget-population, reset and observer checks still pass.
+A new actual-PNG integration test verifies lazy construction, updates from
+all five relevant controls, reuse on redisplay and phase-only render skipping.
+Default and changed (-1,+1), depth 28 um figures were rendered and visually
+inspected, without rendering UserWarnings. New notebook section cells were
+verified to emit widget-view MIME outputs in fresh-kernel execution; they no
+longer emit unlinked static Image display objects. Browser widget-manager
+verification remains pending. No physics-backend changes, commits or pushes.
+
+Final validation: 49 focused tests passed in 60.30 seconds. Fresh-kernel executions passed for Notebook 7.3 (14.47 s) and Appendix 2 (11.67 s), including startup and under concurrent validation load.
+
+
+STALE JUPYTER CLASS CACHE FIX
+
+Reported failure: an explorer constructed by an older cached class lacked the
+new lesson_aids attribute, so rerunning only the section cell raised AttributeError.
+A normal from-import did not guarantee loading the updated class in a live kernel.
+
+New presentation setup helper: wave_optics/gaussian_notebook_setup.py.
+create_gaussian_explorer(previous) closes the previous instance before reloading
+the visualization/diagnostic dependencies and constructing the current explorer.
+The notebook setup/experiment cells now use this factory. It retains the existing
+reset-on-reexecution behavior and avoids requiring a kernel restart just to load
+updated visualization source. Gaussian physics modules are not reloaded or changed.
+After reloading the notebook from disk, Run All replaces the old object and section
+widgets. Running a section cell alone cannot upgrade an existing Python object.
+
+A regression test places an old-class stand-in in the module cache, invokes the
+factory and verifies that the prior object closes and the fresh object owns linked
+guides. The notebook's three-execution owned-widget test now exercises this factory.
+The targeted analytical/visualization suite passed all 28 tests in 28.29 seconds.
+No commit or push.
+
+Fresh-kernel validation passed again: Notebook 7.3 13.22 seconds; Appendix 2 7.32 seconds including startup.
+
+
+PEDAGOGICAL SIMPLIFICATION: DIRECTIONS BRIDGE AND CORE OVERLAP LESSON
+
+Removed the standalone main-path section on Gaussian order directions and
+coordinate rotations. Its essential physical assumption is a short bridge in
+Section 1: the grating equation supplies directions, while Gaussian profiles
+and waist values are assigned rather than solved as grating output fields.
+The default 0/+1 angles remain stated concisely. The main 3D experiment stays
+at the beginning with all of its shared controls and diagnostic views.
+
+The new main sequence is:
+  1. From ideal orders to finite beams.
+  2. Separation, spreading and spatial overlap.
+  3. Coherent interference of finite beams.
+  4. Preparation for mirror recombination.
+
+The overlap lesson now focuses on centre separation, diffraction spreading,
+where the fields still share an illuminated region, and why overlap is not
+mutual coherence. Its linked detector profiles stay in the main path. A short
+predict/change/interpret exercise replaces the long coordinate/integration
+exposition. Full overlap mathematics, detector-line integration assumptions,
+local coordinates, propagation signs and Gaussian widths remain in expandable
+optional background after the main lesson. Checkpoints and section numbers
+were updated to match what the core lesson actually teaches.
+
+The coordinate guide is retained in a collapsed optional widget panel. It
+renders when opened, follows shared controls while open, and skips rendering
+when closed or on phase-only changes. Its observer is removed on close.
+The old direction calculation is preserved as a clearly labelled independent
+default example after the core; it no longer initializes any main-path variables.
+
+Main calculations now build their own snapshot from the current model, selected
+orders, detector depth and relative coefficient phase. This removes dependence
+on the former Section 2 setup cell and avoids silently using fixed default
+parameters when the live experiment has changed. The optional default example
+uses separate variable names and cannot overwrite that main snapshot.
+
+Tests cover collapsed-panel lazy rendering, catch-up after reopening, cleanup,
+and execution of the main calculation with nondefault wavelength/pair/depth/
+phase without running optional setup. Unicode unit artifacts and stray pasted
+plus prefixes in optional math were cleaned, and the obsolete fixed XY-grid
+paragraph was corrected to describe the fitted crop.
+No physics/backend changes, numerical appendix edits, commits or pushes.
+
+Validation: 52 focused tests passed in 68.27 seconds. Fresh-kernel execution passed for the simplified notebook (12.71 s) and preserved appendix (10.92 s), including startup under concurrent validation load. Local-file links resolve; git diff whitespace checks pass.
+
+
+PROMINENT MAIN-LESSON FRINGE EQUATIONS
+
+Section 3 now explicitly connects relative phase across the detector to fringe
+spacing before discussing visibility. The main reading path defines
+Delta phi = arg(conj(U_m)*U_n), writes the cross term as
+2*sqrt(I_m*I_n)*cos(Delta phi), and explains that faster phase change gives
+finer fringes. The boxed same-wavelength plane-wave reference is
+Lambda_x = 2*pi/|Delta k_x| = lambda/|sin(theta_n)-sin(theta_m)| = d/|n-m|.
+The signed angle convention is from transmitted -z toward +x.
+The symmetric-beam special case lambda/[2*sin(Delta theta/2)] is also boxed,
+with its symmetry condition explicit. Larger transverse wavevector difference,
+larger order difference or smaller pitch produces finer nominal fringes.
+Wavelength cancellation for fixed grating orders is explained without suggesting
+that wavelength has no effect on beam angles or Gaussian propagation.
+
+The local Gaussian phase-gradient relation is now in the MAIN lesson, together
+with its plain-language meaning: phase change per unit distance. It is identified
+as a local phase-cycle estimate, distinguished from neighboring intensity-maxima
+spacing when envelopes or gradients vary appreciably. The worked default example
+shows 0 and 14.48-degree axes giving nominal 4 um, compared with local 4.50 um
+near strongest overlap at the 40 um detector. The 80 um value is about 6.00 um;
+the text does not imply that curvature corrections are always small.
+The two rulers and the order-pair comparison 4 um versus 2 um are explained there.
+A final checkpoint reinforces these relations. Optional material retains only
+the coordinate/phase derivation, numerical differentiation and display masks;
+its duplicated elementary equations/example were removed.
+
+Independent numerical checks using the existing model confirmed:
+  (0,+1): angular relation = 4.0 um;
+  (-1,+1): angular and symmetric relations = 2.0 um;
+  depth 40 um, x=5 um: local estimate 4.502649068 um;
+  depth 80 um, x=10 um: local estimate 5.999757509 um.
+All seven executable notebook cells remain unchanged in this prose-only edit.
+Notebook schema, paired display-math delimiters and expandable blocks passed
+checks. No new solver, backend, controls, commits or pushes.
+
+Fresh-kernel execution passed: Notebook 7.3 8.00 seconds; Appendix 2 6.48 seconds including startup. The physics/widget test suite was not rerun for this prose-only change; its previous 52-test pass is recorded above.
