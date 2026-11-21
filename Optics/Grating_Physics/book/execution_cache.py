@@ -1,4 +1,4 @@
-"""Reuse successful execution only when all non-cosmetic inputs match."""
+"""Reuse successful execution only when numerical and validation inputs match."""
 import argparse
 import hashlib
 from importlib import metadata
@@ -8,10 +8,13 @@ import platform
 import sys
 
 import yaml
-from public_content import source_files
+from public_content import PUBLIC_MARKDOWN, source_files
 
 ROOT = Path(__file__).resolve().parents[1]
 COSMETIC = {'assets/textbook.css', 'assets/favicon.svg', 'assets/favicon.ico'}
+# These reader pages are rendered by MyST, never executed by pilot.execute().
+# Rendering, reader-link checks and credential scans still run on every release.
+RENDER_ONLY = COSMETIC | set(PUBLIC_MARKDOWN)
 
 
 def notebooks(root):
@@ -29,7 +32,7 @@ def fingerprint(root=ROOT, private_root=None):
     inputs = {}
     for path in source_files(root):
         name = path.relative_to(root).as_posix()
-        if name in COSMETIC:
+        if name in RENDER_ONLY:
             continue
         data = path.read_bytes()
         if name == 'myst.yml':
