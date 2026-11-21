@@ -19,7 +19,7 @@ import urllib.request
 
 import nbformat
 import yaml
-from public_content import check_readers, source_files
+from public_content import PUBLIC_VERIFICATION_FILES, check_readers, source_files
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / '_build'
@@ -154,6 +154,10 @@ def build():
         if path.exists():
             remove_generated(path, BUILD / 'public-pilot')
     subprocess.run([executable(), 'build', '--html'], cwd=folder, check=True)
+    # Provider verification files must retain their exact names and bytes at
+    # the deployed artifact root, without MyST rendering or theme wrappers.
+    for name in PUBLIC_VERIFICATION_FILES:
+        shutil.copyfile(folder / name, folder / '_build/html' / name)
     scan_public(folder / '_build/html')
     print('Public artifact: _build/public-pilot/_build/html')
 

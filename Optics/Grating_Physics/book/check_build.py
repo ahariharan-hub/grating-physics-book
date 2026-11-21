@@ -70,8 +70,11 @@ if style:
     assert (html_root / 'foundations-of-scalar-optics/index.html').is_file(), 'Notebook 0.0 must remain accessible from the new homepage.'
     layout = dict(homepage='passed', nested_navigation='passed', custom_stylesheet='bundled')
 scan_public(BUILD / 'public-pilot/_build/html')
+verification_name = 'google1303afcb50127b73.html'
+verification = BUILD / 'public-pilot/_build/html' / verification_name
+assert verification.read_bytes() == b'google-site-verification: google1303afcb50127b73.html', 'Google verification file must be unchanged at the artifact root.'
 output = dict(pilot_scope=f'{len(PAGES)} pages; {len(PILOT)} executed notebooks', dropdown_math=records, public_credentials='absent',
-              downloadable_archives=len(archives), layout=layout,
+              downloadable_archives=len(archives), layout=layout, verification_file=verification_name,
               browser_visual_check='not covered by structural build validation')
 (ROOT / 'book/build-validation.json').write_text(json.dumps(output, indent=2)+'\n', encoding='utf-8')
 print(json.dumps(output, indent=2))

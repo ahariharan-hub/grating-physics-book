@@ -60,6 +60,7 @@ PUBLIC_NOTEBOOKS = (
     'Appendix_5_Formulae_Sheet.ipynb',
 )
 PUBLIC_MARKDOWN = ('index.md', 'preface.md', 'reader-guide.md', 'Downloads.md')
+PUBLIC_VERIFICATION_FILES = ('google1303afcb50127b73.html',)
 PUBLIC_HELPERS = {'pilot.py', 'execution_cache.py', 'public_content.py', 'validation_tests.py', 'check_build.py',
                   'check_solutions.py', 'check_boundary.py', 'check_propagation.py',
                   'check_scattering.py', 'check_orders.py', 'check_masks.py', 'requirements-tested.txt'}
@@ -76,7 +77,7 @@ def is_public_source(path):
     if any(p.startswith('.') or p == '__pycache__' for p in parts):
         return path.as_posix() == '.gitignore'
     if len(parts) == 1:
-        return path.name in (*PUBLIC_NOTEBOOKS, *PUBLIC_MARKDOWN, 'myst.yml')
+        return path.name in (*PUBLIC_NOTEBOOKS, *PUBLIC_MARKDOWN, *PUBLIC_VERIFICATION_FILES, 'myst.yml')
     if parts[0] == 'book':
         return len(parts) == 2 and path.name in PUBLIC_HELPERS
     if parts[0] == 'wave_optics':
