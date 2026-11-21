@@ -7,6 +7,7 @@ from pathlib import Path
 import runpy
 import sys
 import unittest
+from validation_tests import private_test_directory
 
 import numpy as np
 
@@ -35,18 +36,21 @@ def verify():
         for panel in namespace.get('propagation_panels', {}).values():
             namespace['_close_widget_tree'](panel)
 
-    suite = unittest.TestSuite()
-    for filename in ('test_scalar_propagation.py', 'test_scalar_propagation_view.py',
-                     'test_scalar_propagation_lesson.py'):
-        spec = importlib.util.spec_from_file_location(filename[:-3], ROOT/'supplement/tests'/filename)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
-    stream = StringIO()
-    result = unittest.TextTestRunner(stream=stream, verbosity=2).run(suite)
-    print(stream.getvalue())
-    if not result.wasSuccessful():
-        raise RuntimeError('Propagation numerical/widget checks failed.')
+    tests = private_test_directory(ROOT)
+    result = unittest.TestResult()
+    if tests is not None:
+        suite = unittest.TestSuite()
+        for filename in ('test_scalar_propagation.py', 'test_scalar_propagation_view.py',
+                         'test_scalar_propagation_lesson.py'):
+            spec = importlib.util.spec_from_file_location(filename[:-3], tests/filename)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
+        stream = StringIO()
+        result = unittest.TextTestRunner(stream=stream, verbosity=2).run(suite)
+        print(stream.getvalue())
+        if not result.wasSuccessful():
+            raise RuntimeError('Propagation numerical/widget checks failed.')
 
     from wave_optics.scalar_theory import slit_propagation
     padding_error = sampling_error = 0.

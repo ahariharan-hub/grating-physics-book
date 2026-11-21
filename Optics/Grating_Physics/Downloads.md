@@ -60,11 +60,11 @@ for 8.3, rather than new notebook chapters. Appendix 1 has four `A1_` programs f
 lossless FMM, absorption, convergence and parameter sweeps. Appendix 2 has
 `A2_1_finite_grating_propagation.py` for finite prescribed openings.
 
-## Start after downloading
+## Local installation and first run
 
 1. Extract the entire ZIP.
 2. Open a terminal in the extracted `Grating_Physics` directory.
-3. Install the included requirements:
+3. Use an existing Python installation, or install Python if needed. A dedicated virtual or Conda environment helps keep the experiment dependencies separate from other projects. Activate that environment, then install the included requirements:
 
    ```console
    python -m pip install -r requirements.txt
@@ -96,5 +96,7 @@ Read the model and units at the top of each file. Prescribed fields, allowed ord
 directions and physical scattering solves answer different questions; intensity
 and normal power efficiency also differ. Check numerical convergence and sampling
 before interpreting a result quantitatively.
+
+For browser-based examples and reading guidance, see the [Reader's Guide](reader-guide.md).
 
 [Return to the course introduction](0_0_Foundations_of_Scalar_Optics.ipynb).

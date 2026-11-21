@@ -7,6 +7,25 @@ The `_common.py` helper only locates the backend and manages plotting.
 
 Install the requirements and keep the downloaded folder structure together.
 
+<a id="chapter-0-cutoffs"></a>
+## Chapter 0 numerical cutoffs
+
+The physical-scattering worked scripts for 0.5-0.7 start with `M = 8`
+(17 harmonics); the corresponding teaching notebooks use `M = 24`
+(49 harmonics). Physical material and illumination defaults agree, but these
+are different numerical truncations. The notebooks display only orders -7
+through +7 while reconstructing fields and calculating power with all 49.
+
+To reproduce notebook values, set `M = 24` in a script and keep sufficient
+sampling (more than `2*M` endpoint-excluded samples per period for the retained
+finite sum). A projection or FFT check verifies that script's own truncated
+field; it does not certify convergence of the scattering solve. Compare larger
+cutoffs for the coefficient or field region you need. Neither default is changed.
+
+For example, the default exit coefficient C_1 differs by about 0.0557% between
+M=8 and M=24; a successful projection check alone will not expose that difference.
+The independent ideal-mask coefficient exercise has no material-solver cutoff.
+
 <a id="notebook-0-1"></a>
 ## Notebook 0.1
 

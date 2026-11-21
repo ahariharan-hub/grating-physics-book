@@ -23,8 +23,11 @@ def build(collection):
     folder=COLLECTIONS/collection
     files=sorted(p for p in folder.rglob('*')
                  if p.is_file() and p.suffix in {'.py','.txt','.md','.json'}
-                 and '__pycache__' not in p.parts)
-    backend=sorted(p for p in (ROOT/'wave_optics').iterdir() if p.is_file() and p.suffix in {'.py','.md'})
+                 and '__pycache__' not in p.parts
+                 and not any(part.lower() in {'tests','validation','supplement'} for part in p.relative_to(folder).parts)
+                 and not p.name.lower().startswith('test_'))
+    backend=sorted(p for p in (ROOT/'wave_optics').iterdir()
+                   if p.is_file() and p.suffix == '.py' and not p.name.lower().startswith('test_'))
     entries={f'Grating_Physics/{p.relative_to(ROOT).as_posix()}':archive_bytes(p) for p in files+backend}
     entries['Grating_Physics/requirements.txt']=archive_bytes(folder/'requirements.txt')
     entries['Grating_Physics/README.txt']=archive_bytes(folder/'README.txt')

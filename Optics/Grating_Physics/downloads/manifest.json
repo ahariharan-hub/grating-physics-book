@@ -1,9 +1,9 @@
 [
   {
     "file": "grating_physics_numerical_explorer.zip",
-    "sha256": "c9da63d4f2a848231fd0dc6fa300982e89cd23dc7fa454834c598fb20144c881",
-    "bytes": 493585,
-    "entries": 110,
+    "sha256": "1334d34f3d967fc8e16d11ecd81f9801a9a5337313b72f8c12511d9e416211ee",
+    "bytes": 445137,
+    "entries": 105,
     "entrypoints": [
       "0_scalar_foundations.py",
       "1_plane_waves.py",
@@ -25,9 +25,9 @@
   },
   {
     "file": "grating_physics_scripts.zip",
-    "sha256": "cd4e11329a1f201b11735686214b7570253f1bb6f209cdcbc54e1bc51e327852",
-    "bytes": 641617,
-    "entries": 239,
+    "sha256": "470fdf3ee0cce15fea688a75c67455647f690c1022ddf66bbcc00d92469b748f",
+    "bytes": 593627,
+    "entries": 234,
     "entrypoints": [
       "8_3a_scalar_asm_propagation.py",
       "8_3b_talbot_propagation.py",

@@ -7,6 +7,7 @@ from pathlib import Path
 import runpy
 import sys
 import unittest
+from validation_tests import private_test_directory
 from unittest.mock import patch
 
 import numpy as np
@@ -71,24 +72,27 @@ def verify():
         for view in namespace.get('grating_views', {}).values():
             view.close()
 
-    suite = unittest.TestSuite()
-    for filename in ('test_absorbing_grating.py', 'test_absorbing_lesson.py'):
-        spec = importlib.util.spec_from_file_location(filename[:-3], ROOT/'supplement/tests'/filename)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        if filename == 'test_absorbing_grating.py':
-            suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
-        else:
-            for name in ('test_complex_material_geometry_and_field_use_n_and_kappa',
-                         'test_harmonics_and_reconstruction_are_from_absorbing_solution',
-                         'test_absorbing_controls_dispose_without_leaking_widgets'):
-                suite.addTest(module.AbsorbingLessonTests(name))
-            suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(module.NotebookReloadTests))
-    stream = StringIO()
-    result = unittest.TextTestRunner(stream=stream, verbosity=1).run(suite)
-    print(stream.getvalue())
-    if not result.wasSuccessful():
-        raise RuntimeError('Scattering numerical/widget checks failed.')
+    tests = private_test_directory(ROOT)
+    result = unittest.TestResult()
+    if tests is not None:
+        suite = unittest.TestSuite()
+        for filename in ('test_absorbing_grating.py', 'test_absorbing_lesson.py'):
+            spec = importlib.util.spec_from_file_location(filename[:-3], tests/filename)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            if filename == 'test_absorbing_grating.py':
+                suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
+            else:
+                for name in ('test_complex_material_geometry_and_field_use_n_and_kappa',
+                             'test_harmonics_and_reconstruction_are_from_absorbing_solution',
+                             'test_absorbing_controls_dispose_without_leaking_widgets'):
+                    suite.addTest(module.AbsorbingLessonTests(name))
+                suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(module.NotebookReloadTests))
+        stream = StringIO()
+        result = unittest.TextTestRunner(stream=stream, verbosity=1).run(suite)
+        print(stream.getvalue())
+        if not result.wasSuccessful():
+            raise RuntimeError('Scattering numerical/widget checks failed.')
     scripts = []
     with redirect_stdout(StringIO()):
         for script in sorted((ROOT/'Wave_solver_py_scripts/scripts/chapter_0').glob('0_5_*.py')):

@@ -1,8 +1,7 @@
 version: 1
-
 project:
   id: a53bac7e-84df-4b93-b7c3-f28179403340
-  title: Grating Physics
+  title: Scalar theory of grating diffraction
   github: https://github.com/ahariharan-hub/grating-physics-book
   jupyter:
     kernelName: python3
@@ -10,14 +9,44 @@ project:
       repo: ahariharan-hub/grating-physics-book
       ref: main
   toc:
-    - file: 0_0_Foundations_of_Scalar_Optics.ipynb
-    - file: 0_1_Scalar_Fields_and_Helmholtz.ipynb
-    - file: 0_2_Solutions_of_the_Helmholtz_Equation.ipynb
-    - file: 0_3_Boundary_Conditions_and_Diffraction.ipynb
-    - file: 0_4_Propagation_of_Scalar_Optical_Fields.ipynb
-    - file: 0_5_From_Helmholtz_BVP_to_Diffracted_Field.ipynb
-    - file: 0_6_From_Complex_Fields_to_Diffraction_Orders.ipynb
-    - file: 0_7_Ideal_Binary_Masks_vs_Physical_Gratings.ipynb
-
+  - file: index.md
+    title: About this book
+  - file: preface.md
+    title: Preface
+  - file: reader-guide.md
+    title: Reader's Guide
+  - title: 0. Foundations of scalar optics
+    children:
+    - title: Fields and wave equations
+      children:
+      - file: 0_0_Foundations_of_Scalar_Optics.ipynb
+        title: 0.0 Foundations of scalar optics
+      - file: 0_1_Scalar_Fields_and_Helmholtz.ipynb
+        title: 0.1 Scalar fields and Helmholtz
+      - file: 0_2_Solutions_of_the_Helmholtz_Equation.ipynb
+        title: 0.2 Helmholtz solutions
+    - title: Boundaries and propagation
+      children:
+      - file: 0_3_Boundary_Conditions_and_Diffraction.ipynb
+        title: 0.3 Boundary conditions and diffraction
+      - file: 0_4_Propagation_of_Scalar_Optical_Fields.ipynb
+        title: 0.4 Scalar field propagation
+    - title: Physical gratings and orders
+      children:
+      - file: 0_5_From_Helmholtz_BVP_to_Diffracted_Field.ipynb
+        title: 0.5 Physical gratings and the HBVP
+      - file: 0_6_From_Complex_Fields_to_Diffraction_Orders.ipynb
+        title: 0.6 Complex fields and diffraction orders
+      - file: 0_7_Ideal_Binary_Masks_vs_Physical_Gratings.ipynb
+        title: 0.7 Ideal masks and physical gratings
+  - file: Downloads.md
+    title: Downloads
+  description: An interactive textbook on scalar optics, diffraction and physical
+    gratings.
 site:
   template: book-theme
+  options:
+    logo_text: Scalar theory of grating diffraction
+    favicon: assets/favicon.svg
+    style: assets/textbook.css
+    outline_maxdepth: 2

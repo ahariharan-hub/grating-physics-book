@@ -19,11 +19,22 @@ import urllib.request
 
 import nbformat
 import yaml
+from public_content import check_readers, source_files
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / '_build'
-PILOT = tuple(entry['file'] for entry in yaml.safe_load(
-    (ROOT / 'myst.yml').read_text(encoding='utf-8'))['project']['toc'])
+def toc_files(entries):
+    """Walk native MyST chapter groups in reading order, excluding URL entries."""
+    files = []
+    for entry in entries:
+        if 'file' in entry:
+            files.append(entry['file'])
+        files.extend(toc_files(entry.get('children', [])))
+    return tuple(files)
+
+
+PAGES = toc_files(yaml.safe_load((ROOT / 'myst.yml').read_text(encoding='utf-8'))['project']['toc'])
+PILOT = tuple(name for name in PAGES if Path(name).suffix == '.ipynb')
 PACKAGES = ('jupyter-book', 'numpy', 'scipy', 'matplotlib', 'plotly', 'ipywidgets',
             'ipykernel', 'jupyter-server', 'jupyter-client', 'nbclient', 'nbformat', 'PyYAML')
 
@@ -74,17 +85,18 @@ def execute():
 
 
 def stage(local=False):
+    selected = source_files(ROOT)
+    check_readers(ROOT, [path.relative_to(ROOT).as_posix() for path in selected])
     folder = BUILD / ('local-preview' if local else 'public-pilot')
     folder.mkdir(parents=True, exist_ok=True)
     # Replace staged sources while preserving the renderer/template cache.
     for path in folder.iterdir():
         if path.name not in ('_build', 'myst.yml'):
             remove_generated(path, folder)
-    for path in list(ROOT.glob('*.ipynb')) + list(ROOT.glob('*.md')):
-        shutil.copy2(path, folder / path.name)
-    for directory in ('wave_optics', 'Wave_solver_py_scripts', 'downloads', 'supplement'):
-        shutil.copytree(ROOT / directory, folder / directory, dirs_exist_ok=True,
-                        ignore=shutil.ignore_patterns('__pycache__', '.pytest_cache', '*.pyc'))
+    for path in selected:
+        destination = folder / path.relative_to(ROOT)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(path, destination)
     for name in PILOT:
         executed = BUILD / 'executed' / name
         if not executed.exists():
@@ -158,7 +170,7 @@ def preview():
             return False
     server_ready = available('http://127.0.0.1:8897/api/status',
                              {'Authorization': 'token '+state['token']})
-    preview_ready = available('http://localhost:3010/', expected=b'Grating Physics')
+    preview_ready = available('http://localhost:3010/', expected=b'Scalar theory of grating diffraction')
     if server_ready and preview_ready:
         print('Refreshed the existing local preview: http://localhost:3010/')
         return
@@ -178,7 +190,10 @@ def preview():
     ])+'\n', encoding='utf-8')
     flags = (subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS) if os.name == 'nt' else 0
     def spawn(command, log_name):
-        environment = dict(os.environ, PYTHONIOENCODING='utf-8', MPLBACKEND='Agg')
+        # Import caches inside the watched source tree trigger a full site reload
+        # and disconnect live widgets. Preview kernels inherit this setting.
+        environment = dict(os.environ, PYTHONIOENCODING='utf-8', MPLBACKEND='Agg',
+                           PYTHONDONTWRITEBYTECODE='1')
         environment['JUPYTER_PATH'] = str(kernel_directory().parent) + os.pathsep + environment.get('JUPYTER_PATH', '')
         with (BUILD / log_name).open('w', encoding='utf-8') as log:
             process = subprocess.Popen(command, cwd=folder, stdout=log, stderr=subprocess.STDOUT,
@@ -192,7 +207,7 @@ def preview():
     print('Local preview: http://localhost:3010 (waiting for new or existing services).')
     for _ in range(45):
         if (available('http://127.0.0.1:8897/api/status', {'Authorization': 'token '+state['token']})
-                and available('http://localhost:3010/', expected=b'Grating Physics')):
+                and available('http://localhost:3010/', expected=b'Scalar theory of grating diffraction')):
             return
         time.sleep(1)
     raise RuntimeError('Preview startup failed; inspect the ignored local logs under _build.')

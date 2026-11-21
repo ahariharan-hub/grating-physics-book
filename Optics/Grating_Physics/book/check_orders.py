@@ -8,6 +8,7 @@ from pathlib import Path
 import runpy
 import sys
 import unittest
+from validation_tests import private_test_directory
 from unittest.mock import patch
 
 import numpy as np
@@ -96,28 +97,31 @@ def verify():
         for view in namespace.get('grating_views', {}).values():
             view.close()
 
-    suite = unittest.TestSuite()
-    for filename in ('test_absorbing_lesson.py', 'test_scalar_grating_view.py'):
-        spec = importlib.util.spec_from_file_location(filename[:-3], ROOT/'supplement/tests'/filename)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        if filename == 'test_absorbing_lesson.py':
-            for name in ('test_reference_evolution_and_flux_accounting_preserve_absorption',
-                         'test_efficiency_plot_totals_include_orders_outside_display'):
-                suite.addTest(module.AbsorbingLessonTests(name))
-        else:
-            for name in ('test_grazing_is_constant_but_has_zero_power',
-                         'test_phase_wrap_and_negligible_coefficients_are_hidden',
-                         'test_plane_validation_respects_transmitted_region'):
-                suite.addTest(module.GratingDataTests(name))
-            for name in ('test_linked_reference_views_reuse_map_and_solver_and_keep_scales',
-                         'test_independent_state_reset_and_full_widget_cleanup'):
-                suite.addTest(module.GratingViewTests(name))
-    stream = StringIO()
-    result = unittest.TextTestRunner(stream=stream, verbosity=1).run(suite)
-    print(stream.getvalue())
-    if not result.wasSuccessful():
-        raise RuntimeError('Diffraction-order numerical/widget checks failed.')
+    tests = private_test_directory(ROOT)
+    result = unittest.TestResult()
+    if tests is not None:
+        suite = unittest.TestSuite()
+        for filename in ('test_absorbing_lesson.py', 'test_scalar_grating_view.py'):
+            spec = importlib.util.spec_from_file_location(filename[:-3], tests/filename)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            if filename == 'test_absorbing_lesson.py':
+                for name in ('test_reference_evolution_and_flux_accounting_preserve_absorption',
+                             'test_efficiency_plot_totals_include_orders_outside_display'):
+                    suite.addTest(module.AbsorbingLessonTests(name))
+            else:
+                for name in ('test_grazing_is_constant_but_has_zero_power',
+                             'test_phase_wrap_and_negligible_coefficients_are_hidden',
+                             'test_plane_validation_respects_transmitted_region'):
+                    suite.addTest(module.GratingDataTests(name))
+                for name in ('test_linked_reference_views_reuse_map_and_solver_and_keep_scales',
+                             'test_independent_state_reset_and_full_widget_cleanup'):
+                    suite.addTest(module.GratingViewTests(name))
+        stream = StringIO()
+        result = unittest.TextTestRunner(stream=stream, verbosity=1).run(suite)
+        print(stream.getvalue())
+        if not result.wasSuccessful():
+            raise RuntimeError('Diffraction-order numerical/widget checks failed.')
     scripts = []
     with redirect_stdout(StringIO()):
         for script in sorted((ROOT/'Wave_solver_py_scripts/scripts/chapter_0').glob('0_6_*.py')):

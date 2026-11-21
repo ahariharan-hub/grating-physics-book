@@ -7,6 +7,7 @@ from pathlib import Path
 import runpy
 import sys
 import unittest
+from validation_tests import private_test_directory
 from unittest.mock import patch
 
 import numpy as np
@@ -86,17 +87,20 @@ def verify():
         if 'absorber_comparison' in namespace:
             namespace['absorber_comparison'].close()
 
-    suite = unittest.TestSuite()
-    for filename in ('test_amplitude_grating.py', 'test_absorbing_grating_view.py'):
-        spec = importlib.util.spec_from_file_location(filename[:-3], ROOT/'supplement/tests'/filename)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
-    stream = StringIO()
-    result = unittest.TextTestRunner(stream=stream, verbosity=1).run(suite)
-    print(stream.getvalue())
-    if not result.wasSuccessful():
-        raise RuntimeError('Ideal-mask comparison numerical/widget checks failed.')
+    tests = private_test_directory(ROOT)
+    result = unittest.TestResult()
+    if tests is not None:
+        suite = unittest.TestSuite()
+        for filename in ('test_amplitude_grating.py', 'test_absorbing_grating_view.py'):
+            spec = importlib.util.spec_from_file_location(filename[:-3], tests/filename)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
+        stream = StringIO()
+        result = unittest.TextTestRunner(stream=stream, verbosity=1).run(suite)
+        print(stream.getvalue())
+        if not result.wasSuccessful():
+            raise RuntimeError('Ideal-mask comparison numerical/widget checks failed.')
     scripts = []
     with redirect_stdout(StringIO()):
         for script in sorted((ROOT/'Wave_solver_py_scripts/scripts/chapter_0').glob('0_7_*.py')):
