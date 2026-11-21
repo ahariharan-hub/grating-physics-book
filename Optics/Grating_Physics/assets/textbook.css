@@ -24,6 +24,14 @@
   --textbook-wash: #142b36;
 }
 html { scroll-padding-top: 5rem; }
+.myst-home-link::before {
+  content: '';
+  flex: 0 0 1.75rem;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  margin-inline-end: .6rem;
+  background: url('favicon.ico') center / contain no-repeat;
+}
 article.article { font-size: 1.0625rem; line-height: 1.75; }
 .article h1.myst-fm-block-title {
   color: var(--textbook-ink);
