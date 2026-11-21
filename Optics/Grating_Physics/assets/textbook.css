@@ -46,6 +46,10 @@ article.article { font-size: 1.0625rem; line-height: 1.75; }
 .article details summary { font-weight: 600; cursor: pointer; }
 .myst-primary-sidebar-toc { font-size: .9rem; line-height: 1.5; }
 .myst-primary-sidebar-toc a[aria-current='page'] { font-weight: 650; }
+/* Reserve a gutter between the desktop navigation scrollbar and the article. */
+@media (min-width: 1280px) {
+  .myst-primary-sidebar-pointer { padding-inline-end: 1.5rem; }
+}
 .myst-top-nav-bar { border-bottom: 1px solid var(--textbook-rule); }
 .textbook-hero { border-top: 3px solid var(--myst-color-link); border-bottom: 1px solid var(--textbook-rule); padding: 1rem 0 1.4rem; margin-bottom: 2.3rem; }
 .textbook-hero > p:first-child { color: var(--textbook-muted); font-size: .74rem; font-weight: 650; letter-spacing: .13em; }
