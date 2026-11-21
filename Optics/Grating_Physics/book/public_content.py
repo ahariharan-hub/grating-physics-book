@@ -60,7 +60,7 @@ PUBLIC_NOTEBOOKS = (
     'Appendix_5_Formulae_Sheet.ipynb',
 )
 PUBLIC_MARKDOWN = ('index.md', 'preface.md', 'reader-guide.md', 'Downloads.md')
-PUBLIC_HELPERS = {'pilot.py', 'public_content.py', 'validation_tests.py', 'check_build.py',
+PUBLIC_HELPERS = {'pilot.py', 'execution_cache.py', 'public_content.py', 'validation_tests.py', 'check_build.py',
                   'check_solutions.py', 'check_boundary.py', 'check_propagation.py',
                   'check_scattering.py', 'check_orders.py', 'check_masks.py', 'requirements-tested.txt'}
 ASSET_TYPES = {'.svg', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.css', '.woff', '.woff2', '.ico'}

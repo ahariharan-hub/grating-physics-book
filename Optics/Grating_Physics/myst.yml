@@ -159,6 +159,6 @@ site:
   template: book-theme
   options:
     logo_text: Scalar theory of grating diffraction
-    favicon: assets/favicon.svg
+    favicon: assets/favicon.ico
     style: assets/textbook.css
     outline_maxdepth: 2
