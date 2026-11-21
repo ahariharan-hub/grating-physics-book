@@ -35,7 +35,7 @@ def toc_files(entries):
 
 PAGES = toc_files(yaml.safe_load((ROOT / 'myst.yml').read_text(encoding='utf-8'))['project']['toc'])
 PILOT = tuple(name for name in PAGES if Path(name).suffix == '.ipynb')
-PACKAGES = ('jupyter-book', 'numpy', 'scipy', 'matplotlib', 'plotly', 'ipywidgets',
+PACKAGES = ('jupyter-book', 'numpy', 'scipy', 'matplotlib', 'plotly', 'anywidget', 'ipywidgets',
             'ipykernel', 'jupyter-server', 'jupyter-client', 'nbclient', 'nbformat', 'PyYAML')
 
 
