@@ -21,6 +21,17 @@ from jupyter_book.nodeenv import find_nodeenv_path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def node_executable():
+    """Use Jupyter Book's managed Node, or the Node supplied by CI on PATH."""
+    managed = find_nodeenv_path('22.17.0') / ('Scripts/node.exe' if sys.platform == 'win32' else 'bin/node')
+    if managed.is_file():
+        return managed
+    installed = shutil.which('node')
+    if installed:
+        return Path(installed)
+    raise RuntimeError('Install Node 22 or prepare the Jupyter Book managed Node runtime.')
+
+
 def input_key(stage, name):
     """Ignore saved outputs; identify the code and files the engine executes."""
     stage = Path(stage)
@@ -79,9 +90,7 @@ def validate(stage, names=None):
         if notebook.parent != stage or not notebook.is_file():
             raise RuntimeError('Unexpected staged notebook: ' + name)
         shutil.copyfile(notebook, frozen / name)
-    node = find_nodeenv_path('22.17.0') / ('Scripts/node.exe' if sys.platform == 'win32' else 'bin/node')
-    if not node.is_file():
-        raise RuntimeError('The Jupyter Book managed Node runtime could not be found.')
+    node = node_executable()
     class QuietHandler(SimpleHTTPRequestHandler):
         def translate_path(self, path):
             relative = unquote(urlsplit(path).path).lstrip('/')

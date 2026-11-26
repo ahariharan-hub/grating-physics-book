@@ -46,6 +46,11 @@ cell, so readers can start with the lesson's visible setup cell. Initialization
 is idempotent within a kernel and repeats after a kernel restart. A failed
 initialization stops the requested cell and remains retryable. Scientific
 cells still follow the usual notebook order for variables and lesson setup.
+Generated presentation prerequisites also run before their later display cells.
+This retains lesson 7.2's compact explorer during individual-cell execution and
+after reloading the lesson setup, without auto-executing scientific cells.
+Widget models are marked offline before closing their views, preventing deferred
+view updates from trying to synchronize through an already deleted channel.
 The bundled JupyterLite server originally removed its session when disposing
 the old kernel during restart. A guarded browser adapter waits for replacement
 and reattaches the session's shutdown listener. Ordinary shutdown still removes

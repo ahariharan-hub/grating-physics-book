@@ -328,6 +328,23 @@ def reading_outline(text):
     return text.replace(needle, replacement), text.count(needle)
 
 
+def presentation_prerequisites():
+    """Apply generated presentation cells that precede the selected lesson cell.
+
+    These depend on normal lesson setup, so they cannot run during the initial
+    browser bootstrap. Their own Python guards safely reapply after a lesson
+    reload. Never auto-execute scientific lesson cells.
+    """
+    return (
+        'const __bookPosition=z?.code?.indexOf(L)??-1;'
+        'for(const __bookPresentation of (z?.code??[]).slice(1,Math.max(1,__bookPosition))){'
+        'if(__bookPresentation.source.startsWith(\'"""Presentation for generated lesson 7.2;\')){'
+        'const __bookPresentationResult=await __bookPresentation.execute();'
+        'if(!__bookPresentationResult||__bookPresentationResult.error?.length){'
+        'L.render(__bookPresentation.model.toJSON());return;}}}'
+    )
+
+
 def initialize_before_individual_cell(text):
     """Run the generated browser prerequisite before any individual code cell.
 
@@ -360,7 +377,8 @@ def initialize_before_individual_cell(text):
         'finally{delete __bookInit.__bookPendingInit;}'
         'if(!__bookResult||__bookResult.error?.length){'
         'L.render(__bookInit.model.toJSON());return;}}'
-        'await L.execute();}catch(__bookError){L.clearOnError(__bookError);}'
+        + presentation_prerequisites()
+        + 'await L.execute();}catch(__bookError){L.clearOnError(__bookError);}'
         'finally{p.clearCell(N,P,L.id,`execute`);}},100)'
     )
     return text.replace(needle, replacement), text.count(needle)
@@ -421,6 +439,19 @@ def disable_contents_serviceworker(text):
     return text.replace(needle, replacement), text.count(needle)
 
 
+def stop_closed_widget_sync(text):
+    """Stop deferred view updates from syncing after their widget is closed.
+
+    The bundled widget model deletes its comm but leaves comm_live true. View
+    removal then calls save_changes against the deleted channel. Mark the
+    model offline before removing its views; missing comms on open models
+    retain the upstream error behavior.
+    """
+    needle = 'if(this._closed=!0,this.comm&&!e&&this.comm.close(),'
+    replacement = needle.replace('this._closed=!0,', 'this._closed=!0,this.comm_live=!1,')
+    return text.replace(needle, replacement), text.count(needle)
+
+
 def package_site(html, base_url=''):
     """Adapt derived theme assets only; retain guards against upstream changes."""
     html = Path(html)
@@ -445,6 +476,7 @@ def package_site(html, base_url=''):
     individual_cell_initializers = 0
     restart_session_guards = {'kernel_restart': 0, 'session_rebind': 0}
     disabled_contents_workers = 0
+    closed_widget_guards = 0
     changes = []
     for path in [*html.glob('*.js'), *(html / '_assets').glob('*.js')]:
         original = path.read_text(encoding='utf-8')
@@ -470,6 +502,8 @@ def package_site(html, base_url=''):
             restart_session_guards[name] += count
         text, disabled_workers = disable_contents_serviceworker(text)
         disabled_contents_workers += disabled_workers
+        text, closed_guards = stop_closed_widget_sync(text)
+        closed_widget_guards += closed_guards
         # Thebe's defaults otherwise permit PyPI fallback for the kernel itself.
         needle = f'pipliteUrls:["{base_url}/pypi/all.json"],pipliteWheelUrl:'
         text = text.replace(needle, needle.replace('],pipliteWheelUrl:', '],disablePyPIFallback:!0,pipliteWheelUrl:'))
@@ -494,6 +528,8 @@ def package_site(html, base_url=''):
         raise RuntimeError('Review changed JupyterLite kernel/session restart lifecycle.')
     if disabled_contents_workers != 1:
         raise RuntimeError('Review changed JupyterLite optional contents service-worker plugin.')
+    if closed_widget_guards != 2:
+        raise RuntimeError('Review changed widget model closure lifecycle.')
     meta = '<meta http-equiv="Content-Security-Policy" content="' + escape(content_policy(), quote=True) + '">'
     for path in html.rglob('*.html'):
         text = path.read_text(encoding='utf-8')
@@ -510,6 +546,7 @@ def package_site(html, base_url=''):
                   individual_cell_initializers=individual_cell_initializers,
                   restart_session_guards=restart_session_guards,
                   disabled_contents_workers=disabled_contents_workers,
+                  closed_widget_guards=closed_widget_guards,
                   filesystem='Pyodide memory filesystem; JupyterLite contents mount disabled',
                   remote_requests='blocked by Content-Security-Policy; live validation still required')
     (html.parent.parent / 'same-site-build.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
