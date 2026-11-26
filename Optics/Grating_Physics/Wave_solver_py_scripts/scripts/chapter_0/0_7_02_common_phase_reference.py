@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""0.7, worked example 2: Compare physical and ideal masks with one exit-phase reference.
+"""0.7, worked example 2: Compare both fields at the exit after prescribing the thin mask at z=0.
 
 Companion topic: Read the field and coefficient views.
 Vacuum wavelength and lengths um. Normal-incidence scalar/TE model; air exteriors; outgoing -z; illustrative n+i*kappa.
@@ -34,29 +34,29 @@ configuration = AbsorbingGratingConfiguration(
 solution = solve_absorbing_grating(configuration)
 
 # %% NUMERICAL CALCULATION
-incident_exit_reference = np.exp(2j * np.pi * thickness / wavelength)
-physical = solution.transmission / incident_exit_reference
-ideal = opening_width / period * np.sinc(solution.orders * opening_width / period)
+physical = solution.transmission
+t_m = opening_width / period * np.sinc(solution.orders * opening_width / period)
+ideal = t_m * np.exp(1j * solution.beta_output * thickness)
 x = np.linspace(-period / 2, period / 2, 601)
 physical_field = physical @ np.exp(1j * solution.kx[:, None] * x)
 ideal_truncated = ideal @ np.exp(1j * solution.kx[:, None] * x)
 
 # %% CHECK AND INTERPRET
-assert np.allclose(physical_field, solution.reconstruct(x, [-thickness])[0] / incident_exit_reference)
-print('A common incident exit reference preserves physically meaningful complex differences.')
+assert np.allclose(physical_field, solution.reconstruct(x, [-thickness])[0])
+print('The thin mask starts at z=0; each order propagates to the common exit plane z=-h.')
 
 # %% GRAPHICS
 if __name__ == '__main__':
     plt = pyplot(show_plot)
     figure, axes = plt.subplots(1, 2, figsize=(11, 4), layout='constrained')
     axes[0].plot(x, physical_field.real, label='Physical real field')
-    axes[0].plot(x, ideal_truncated.real, '--', label='Truncated ideal mask')
-    axes[0].set(xlabel='x (um)', ylabel='Referenced real field')
+    axes[0].plot(x, ideal_truncated.real, '--', label='Ideal mask propagated from z=0')
+    axes[0].set(xlabel='x (um)', ylabel='Real field at the physical exit')
     axes[0].legend()
     axes[1].plot(solution.orders, abs(physical - ideal), 'o-')
     axes[1].set(xlabel='Order m', ylabel='Complex coefficient difference magnitude')
 
     # %% NUMERICAL SUMMARY
-    print('0.7 - Compare physical and ideal masks with one exit-phase reference')
+    print('0.7 - Compare both fields at the exit after prescribing the thin mask at z=0')
     print('Numerical check passed. Read CHECK AND INTERPRET before changing parameters.')
     finish(figure, show_plot)

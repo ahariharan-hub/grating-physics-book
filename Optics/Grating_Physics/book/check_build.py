@@ -65,7 +65,7 @@ if style:
     assert any(p.read_bytes().replace(b'\r\n', b'\n') == css for p in html_root.rglob('*.css')), 'Custom stylesheet missing from the built site.'
     homepage = (html_root / 'index.html').read_text(encoding='utf-8')
     assert 'textbook-hero' in homepage and 'Explore the book' in homepage
-    assert '51 notebooks' in homepage and 'Appendices and practical resources' in homepage
+    assert '52 notebooks' in homepage and 'Appendices and practical resources' in homepage
     assert 'Begin with 0.0: Foundations of scalar optics' in homepage
     assert (html_root / 'foundations-of-scalar-optics/index.html').is_file(), 'Notebook 0.0 must remain accessible from the new homepage.'
     layout = dict(homepage='passed', nested_navigation='passed', custom_stylesheet='bundled')

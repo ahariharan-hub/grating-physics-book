@@ -40,7 +40,7 @@ def verify():
         np.testing.assert_allclose(namespace['try_coefficients'][(namespace['try_orders'] != 0) & (namespace['try_orders'] % 2 == 0)], 0, atol=1e-15)
         j = cases.configuration.M+1
         errors = [float(abs(p.difference[j])) for p in cases.planes(0)]
-        np.testing.assert_allclose(np.array(errors)[[0, 3, 6]], [.227, .081, .200], atol=.001)
+        np.testing.assert_allclose(np.array(errors)[[0, 3, 6]], [.2266, .02078, .08598], atol=.001)
         assert np.argmin(errors) == 3
         fft_error = 0.
         with patch('wave_optics.amplitude_grating.solve_absorbing_grating', side_effect=AssertionError('unexpected solve')):

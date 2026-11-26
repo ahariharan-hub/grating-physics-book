@@ -6,6 +6,10 @@ An interactive textbook exploring optical physics through **physical intuition, 
 
 **[Read the online textbook](https://ahariharan-hub.github.io/grating-physics-book/)**
 
+Choose [browser Python](https://ahariharan-hub.github.io/grating-physics-book/pyodide/)
+for calculations on your computer, or [Binder Python](https://ahariharan-hub.github.io/grating-physics-book/)
+for a remote Python session. Both editions contain the same lessons.
+
 ## About this book
 
 How does a periodic structure transform an incident optical wave into diffracted fields?
@@ -18,7 +22,7 @@ The emphasis is on understanding the physics by connecting equations to interact
 
 ## Contents
 
-The textbook currently contains **51 Jupyter notebooks**, organized into:
+The textbook currently contains **52 Jupyter notebooks**, organized into:
 
 | Chapter | Topic |
 |---|---|
@@ -35,7 +39,7 @@ The textbook currently contains **51 Jupyter notebooks**, organized into:
 
 The book also includes a closing synthesis connecting diffraction to imaging, five mathematical and computational appendices, and downloadable Python experiments.
 
-*Chapter 9 currently contains lessons 9.0–9.2; additional lessons are planned.*
+*Chapter 9 contains lessons 9.0–9.3, including the comparison of thin and thick mask exit fields.*
 
 ## Interactive notebooks
 
@@ -43,12 +47,12 @@ The mathematical explanations, equations, and static figures can be read directl
 
 To run the interactive examples:
 
-1. Open a notebook in the [online textbook](https://ahariharan-hub.github.io/grating-physics-book/).
-2. Click the **power button** near the top of the page to activate a Binder-hosted Python session.
+1. Open a notebook in the [browser Python edition](https://ahariharan-hub.github.io/grating-physics-book/pyodide/) or the [Binder edition](https://ahariharan-hub.github.io/grating-physics-book/).
+2. Click the **power button** near the top of the page to start Python.
 3. Select **Run all cells** if necessary.
 4. Use the sliders, buttons, and plots to explore the models.
 
-**No Python installation is required.** Binder sessions are temporary, and initial startup may take some time.
+**No Python installation is required.** The browser edition loads Python, libraries and widget assets from the book's own website and computes on your computer through Pyodide. The Binder edition uses a temporary external computation server. Initial startup can take time in either edition.
 
 See the [Reader's Guide](Optics/Grating_Physics/reader-guide.md) for additional instructions.
 
@@ -87,9 +91,15 @@ python book/pilot.py preview
 
 Open `http://localhost:3010/` in your browser.
 
-GitHub Actions executes and validates the notebooks in the published table of contents before deploying the website to GitHub Pages.
+To build and validate both published editions locally:
 
-Further information is available in the [book implementation notes](Optics/Grating_Physics/book/README.md).
+```bash
+python book/release.py build --base-url /grating-physics-book --wasm all
+```
+
+GitHub Actions executes the native notebooks, checks the numerical helpers, builds both editions, and validates every browser notebook before deploying the combined website. Pull requests build without deploying. The browser runtime is packaged with the website; its files are not stored in Git history.
+
+Further information is available in the [browser edition notes](Optics/Grating_Physics/book/PYODIDE.md).
 
 ## Feedback and contributions
 

@@ -5,7 +5,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 
 from .amplitude_grating import (
-    AbsorbingComparisonData, ideal_amplitude_exit_field, field_fourier_coefficients, FIELD_FFT_ATOL,
+    AbsorbingComparisonData, ideal_amplitude_object_field, field_fourier_coefficients, FIELD_FFT_ATOL,
 )
 from .grating_intro import _close_widget_tree
 from .grating_comparison_view import _phase_text, _complex_text
@@ -116,11 +116,11 @@ class AbsorbingGratingExplorer:
             a['plane_lines'].append(axis.axhline(-c.thickness, color=CYAN, lw=1.5))
             a['exit_lines'].append(axis.axhline(-c.thickness, color='gray', ls='--', lw=1))
             axis.axhline(0, color='gray', ls='--', lw=1)
-        a['mask'], = mask.plot(self.x, abs(ideal_amplitude_exit_field(c, self.x)), color=ORANGE, lw=2)
-        mask.set(title='Prescribed ideal transmission', xlabel='x (µm)', ylabel='|t ideal(x)|', ylim=(-.08, 1.15))
+        a['mask'], = mask.plot(self.x, abs(ideal_amplitude_object_field(c, self.x)), color=ORANGE, lw=2)
+        mask.set(title='Ideal transmission at object plane z = 0', xlabel='x (µm)', ylabel='|t ideal(x)|', ylim=(-.08, 1.15))
         for name, axis in (('profile', profile), ('field_phase', phase)):
             a[name+'_hbvp'], = axis.plot([], [], color=BLUE, label='Physical absorber')
-            a[name+'_thin'], = axis.plot([], [], '--', color=ORANGE, label='Ideal: finite Fourier sum')
+            a[name+'_thin'], = axis.plot([], [], '--', color=ORANGE, label='Ideal: propagated from z = 0')
             axis.set(xlabel='x (µm)', xlim=(-c.period/2, c.period/2))
             a[name+'_position'] = axis.axvline(0, color=CYAN, alpha=.6, lw=1)
             a[name+'_point'], = axis.plot([], [], 'o', color=CYAN, mec=INK, ms=7, zorder=5)
@@ -128,7 +128,7 @@ class AbsorbingGratingExplorer:
         phase.set(title='Wrapped phase on the same plane', ylabel='arg U (rad)', ylim=(-3.4, 3.4),
                   yticks=[-np.pi, 0, np.pi], yticklabels=['−π', '0', 'π'])
         a['field_argand_thin'], = field_argand.plot([], [], '--', color=ORANGE, alpha=.55, lw=1,
-                                                   label='Ideal: finite Fourier sum')
+                                                   label='Ideal: propagated from z = 0')
         a['field_argand'] = field_argand.scatter(np.zeros(self.x.size), np.zeros(self.x.size),
             c=self.x, cmap='viridis', vmin=-c.period/2, vmax=c.period/2, s=9, linewidths=0, zorder=3)
         self.figures[0].colorbar(a['field_argand'], ax=field_argand, label='HBVP position x (µm)', shrink=.8)
@@ -172,7 +172,7 @@ class AbsorbingGratingExplorer:
         a['selected_markers'] = []
         coefficient_labels = {
             'hbvp': 'Absorber: direct HBVP',
-            'thin': 'Ideal mask: analytical',
+            'thin': 'Ideal mask: from z = 0',
             'fft': 'FFT of same HBVP field\n'
                    r'$U_{\mathrm{HBVP}}(x,z_{\mathrm{ref}})$',
         }
@@ -313,10 +313,10 @@ class AbsorbingGratingExplorer:
             a['power_'+name].set_data(self.data.thicknesses, [getattr(s, attr) for s in self.data.solutions])
         local = self.fields['hbvp'][point]
         self.readout.value = (f'<b>h = {h:.2f} µm; z_ref = {p.z_ref:.2f} µm.</b> '
-            f'Air opening CD = {self.config.clear_width:g} µm, period d = {self.config.period:g} µm; '
+            f'Opening width W<sub>open</sub> = {self.config.clear_width:g} µm, period d = {self.config.period:g} µm; '
             f'absorber n = {self.config.n_absorber:g} + {self.config.kappa:g}i; λ₀ = {self.config.wavelength:g} µm. '
             f'Illustrative material; {2*self.config.M+1} retained orders. '
-            'Both models: Uᵢ(0) = 1; no fitted phase. Phase gaps hide wraps or amplitudes below 10⁻⁶.'
+            'Thin mask at z = 0, propagated to z_ref. Both models: Uᵢ(0) = 1; no fitted phase. Phase gaps hide wraps or amplitudes below 10⁻⁶.'
             f'<br><b>Physical flux:</b> R = {solution.reflectance:.5f}, T = {solution.transmittance:.5f}, '
             f'A = {solution.absorption:.5f}; R + T + A = {solution.energy_balance:.10f}. '
             'A is integrated material loss; the ideal mask does not determine R or A.'

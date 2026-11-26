@@ -79,7 +79,7 @@ def grating_geometry_figure():
                                  facecolor='#dff4fc', edgecolor='#3286a7'))
     # Measure the period between corresponding left edges of adjacent openings.
     for start, end, height, label in ((-.5, 1.5, 1.15, 'period d'),
-                                       (-.5, .5, -1.2, 'opening width a')):
+                                       (-.5, .5, -1.2, r'opening width $W_{\mathrm{open}}$')):
         if label == 'period d':
             plan.vlines([start, end], .9, height + .07,
                         color='#72808f', linewidth=.8)
@@ -752,7 +752,7 @@ class GratingSurfaceExplorer:
                 f'<b>G = 2π/d = {2*np.pi/period:.4f} rad/µm</b>.<br>'
                 f'L/d = {self.field_width_um/period:.4g} periods across the field.<br>')
         else:
-            geometry = f'a = d/2 = {width:.2f} µm; '
+            geometry = f'W<sub>open</sub> = d/2 = {width:.2f} µm; '
         self.readout.value = (
             f'<div style="padding:8px 0">{geometry}<b>{status}</b><br>A = 1; '
             f'k<sub>ix</sub> = {k_vector[0]:+.3f} rad/µm; '

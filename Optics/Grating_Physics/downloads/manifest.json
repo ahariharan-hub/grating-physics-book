@@ -1,9 +1,9 @@
 [
   {
     "file": "grating_physics_numerical_explorer.zip",
-    "sha256": "1334d34f3d967fc8e16d11ecd81f9801a9a5337313b72f8c12511d9e416211ee",
-    "bytes": 445137,
-    "entries": 105,
+    "sha256": "56788298a6c25773ffaae8a863407d75a06d38a6bc06e6619af59951e018d8fb",
+    "bytes": 460476,
+    "entries": 108,
     "entrypoints": [
       "0_scalar_foundations.py",
       "1_plane_waves.py",
@@ -25,9 +25,9 @@
   },
   {
     "file": "grating_physics_scripts.zip",
-    "sha256": "470fdf3ee0cce15fea688a75c67455647f690c1022ddf66bbcc00d92469b748f",
-    "bytes": 593627,
-    "entries": 234,
+    "sha256": "498acbfa9c6e2940d666a3146e1a1c9ddca1b5b288ceaffce03888a765f4357b",
+    "bytes": 617161,
+    "entries": 241,
     "entrypoints": [
       "8_3a_scalar_asm_propagation.py",
       "8_3b_talbot_propagation.py",
@@ -175,7 +175,11 @@
       "chapter_9/9_2_01_fft_origin_correction.py",
       "chapter_9/9_2_02_aliasing_collision.py",
       "chapter_9/9_2_03_multiple_period_windows.py",
-      "chapter_9/9_2_04_two_dimensional_fft_coefficients.py"
+      "chapter_9/9_2_04_two_dimensional_fft_coefficients.py",
+      "chapter_9/9_3_01_thin_mask_at_object_plane.py",
+      "chapter_9/9_3_02_thick_exit_to_object_plane.py",
+      "chapter_9/9_3_03_compare_complex_orders.py",
+      "chapter_9/9_3_04_common_observation_plane.py"
     ]
   }
 ]

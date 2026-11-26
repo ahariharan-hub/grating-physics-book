@@ -52,6 +52,7 @@ PUBLIC_NOTEBOOKS = (
     '9_0_From_a_Physical_Model_to_a_Numerical_Experiment.ipynb',
     '9_1_Defining_the_Complex_Exit_Field.ipynb',
     '9_2_Sampling_Complex_Fields_and_Their_Spectra.ipynb',
+    '9_3_Thin_and_Thick_Mask_Exit_Field_Comparison.ipynb',
     'Closing_0_From_Diffraction_to_Imaging.ipynb',
     'Appendix_1_Fourier_Modal_Method_for_Scalar_Grating_Scattering.ipynb',
     'Appendix_2_Numerical_Diffraction_of_Finite_Grating_Illumination.ipynb',
@@ -63,7 +64,12 @@ PUBLIC_MARKDOWN = ('index.md', 'preface.md', 'reader-guide.md', 'Downloads.md')
 PUBLIC_VERIFICATION_FILES = ('google1303afcb50127b73.html',)
 PUBLIC_HELPERS = {'pilot.py', 'execution_cache.py', 'public_content.py', 'validation_tests.py', 'check_build.py',
                   'check_solutions.py', 'check_boundary.py', 'check_propagation.py',
-                  'check_scattering.py', 'check_orders.py', 'check_masks.py', 'requirements-tested.txt'}
+                  'check_scattering.py', 'check_orders.py', 'check_masks.py', 'requirements-tested.txt',
+                  'pyodide_book.py', 'pyodide_pilot.py', 'pyodide_assets.py',
+                  'pyodide_static.py', 'pyodide_validate.py', 'pyodide_notebook.mjs',
+                  'browser-layout.css', 'plotly-widget-layout.js',
+                  'compact-order-interference.py', 'phase-geometry-markdown.py',
+                  'release.py', 'PYODIDE.md'}
 ASSET_TYPES = {'.svg', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.css', '.woff', '.woff2', '.ico'}
 
 

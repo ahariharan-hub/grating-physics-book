@@ -1,4 +1,4 @@
-name: Grating Physics pilot
+name: Grating Physics editions
 on:
   push:
     branches: [main]
@@ -6,27 +6,31 @@ on:
       - 'Optics/Grating_Physics/**'
       - '.github/workflows/grating-book.yml'
       - '.binder/**'
+      - 'README.md'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Optics/Grating_Physics/**'
+      - '.github/workflows/grating-book.yml'
+      - '.binder/**'
+      - 'README.md'
   workflow_dispatch:
 permissions:
   contents: read
-  actions: read
-  pages: write
-  id-token: write
 concurrency:
-  group: pages
+  group: grating-pages-${{ github.ref }}
   cancel-in-progress: false
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    timeout-minutes: 120
     defaults:
       run:
         working-directory: Optics/Grating_Physics
     env:
       BASE_URL: /${{ github.event.repository.name }}
       MPLBACKEND: Agg
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -36,8 +40,7 @@ jobs:
           cache-dependency-path: Optics/Grating_Physics/book/requirements-tested.txt
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
-      - uses: actions/configure-pages@v5
+          node-version: '22.17.0'
       - name: Install tested notebook and book dependencies
         run: python -m pip install -r book/requirements-tested.txt
       - name: Identify execution inputs
@@ -46,37 +49,55 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: Optics/Grating_Physics/_build/executed
-          key: grating-executed-v1-${{ runner.os }}-${{ steps.inputs.outputs.key }}
-      - name: Verify cached execution
-        id: execution
-        run: echo "valid=$(python book/execution_cache.py check)" >> "$GITHUB_OUTPUT"
+          key: grating-executed-v2-${{ runner.os }}-${{ steps.inputs.outputs.key }}
+      - uses: actions/cache@v4
+        with:
+          path: Optics/Grating_Physics/_build/pyodide-runtime
+          key: grating-runtime-v2-${{ runner.os }}-${{ hashFiles('Optics/Grating_Physics/book/pyodide_assets.py', 'Optics/Grating_Physics/book/requirements-tested.txt') }}
+      - uses: actions/cache@v4
+        with:
+          path: |
+            Optics/Grating_Physics/_build/release/browser/native
+            Optics/Grating_Physics/_build/release/browser/wasm-validation
+          key: grating-browser-executed-v1-${{ runner.os }}-${{ steps.inputs.outputs.key }}
       - uses: actions/cache@v4
         with:
           path: |
             Optics/Grating_Physics/_build/public-pilot/_build/templates
             Optics/Grating_Physics/_build/public-pilot/_build/cache
-          key: grating-renderer-v1-${{ runner.os }}-${{ hashFiles('Optics/Grating_Physics/book/requirements-tested.txt', '.github/workflows/grating-book.yml') }}
-      - name: Execute configured book notebooks
-        if: steps.execution.outputs.valid != 'true'
-        run: python book/pilot.py execute
-      - name: Check solution families and widget callbacks
-        if: steps.execution.outputs.valid != 'true'
-        run: |
-          python book/check_solutions.py
-          python book/check_boundary.py
-          python book/check_propagation.py
-          python book/check_scattering.py
-          python book/check_orders.py
-          python book/check_masks.py
-      - name: Build public pilot and scan for local credentials
-        run: |
-          python book/pilot.py build
-          python book/check_build.py
-      - name: Record successful execution validation
-        run: python book/execution_cache.py save
-      - uses: actions/upload-pages-artifact@v3
+            Optics/Grating_Physics/_build/release/browser/source/_build/templates
+            Optics/Grating_Physics/_build/release/browser/source/_build/cache
+          key: grating-renderer-v2-${{ runner.os }}-${{ hashFiles('Optics/Grating_Physics/book/requirements-tested.txt', '.github/workflows/grating-book.yml') }}
+      - name: Build both editions and validate all browser computations
+        run: python -B book/release.py build --wasm all
+      - name: Upload validation reports
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          path: Optics/Grating_Physics/_build/public-pilot/_build/html
+          name: grating-validation
+          if-no-files-found: warn
+          path: |
+            Optics/Grating_Physics/_build/release/assembly.json
+            Optics/Grating_Physics/_build/release/browser/checks.json
+            Optics/Grating_Physics/_build/release/browser/wasm-validation/summary.json
+            Optics/Grating_Physics/_build/release/browser/build.log
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Optics/Grating_Physics/_build/release/site
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
       - name: Wait for Pages artifact metadata
         env:
           GH_TOKEN: ${{ github.token }}
@@ -99,6 +120,6 @@ jobs:
           else:
               raise SystemExit('Uploaded Pages artifact is not visible yet; retry the workflow.')
           PY
-      - name: Deploy pilot
+      - name: Deploy Binder and browser Python editions
         id: deployment
         uses: actions/deploy-pages@v4

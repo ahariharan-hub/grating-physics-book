@@ -95,7 +95,7 @@ class AbsorbingGrating2DExplorer:
         s, ideal = self.data.solution, self.data.ideal
         material = c.refractive_index(self.x, self.y, [-c.thickness/2])[0]
         physical, prescribed = self._field(s.transmission), self._field(ideal.transmission)
-        mask = abs(ideal.exact_exit_field(self.x, self.y))
+        mask = abs(ideal.exact_object_field(self.x, self.y))
         for im, values in zip(self._images[0],
                               (material.real, material.imag, mask, abs(physical), _phase(physical), abs(prescribed))):
             im.set_data(values)

@@ -183,8 +183,10 @@ def compare_grating_models(solution, z_ref, *, thin_model=None, phase_floor=1e-6
     if thin_model.configuration != solution.configuration:
         raise ValueError('Both models must describe the same geometry and retained orders.')
     z = _real_scalar(z_ref, 'z_ref')
+    if z > -solution.configuration.thickness:
+        raise ValueError('The common observation plane must be at or below the physical exit.')
     floor = _real_scalar(phase_floor, 'phase_floor', positive=True)
-    thin = thin_model.at_reference_plane(z)  # Validates the shared output half-space.
+    thin = thin_model.at_reference_plane(z)
     hbvp = solution.at_reference_plane(z)
     valid_thin, valid_hbvp = abs(thin) >= floor, abs(hbvp) >= floor
     return GratingComparisonPlane(

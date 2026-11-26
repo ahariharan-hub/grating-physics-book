@@ -1,4 +1,4 @@
-"""Physical 2D absorbing screen and ideal rectangular-opening exit prescription."""
+"""Physical 2D absorbing screen and ideal opening prescribed at z_obj=0."""
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -49,9 +49,10 @@ def _reconstruct(coefficients, kx, ky, x, y):
 
 @dataclass(frozen=True)
 class IdealAmplitudeGrating2D:
-    """Thin exit-plane prescription; predicts neither reflection nor absorption.
+    """Thin object-plane prescription at z=0; no solved reflection or absorption.
 
     Same incident phase U_i(0,0,0)=1 as FMM, and the same exit z=-h.
+    Propagate each order from z=0 to the common exit z=-h.
     No phase fitting or peak/power normalization is applied.
     """
     configuration: ScalarGrating2DConfiguration
@@ -63,6 +64,7 @@ class IdealAmplitudeGrating2D:
     transmission: np.ndarray = field(init=False, repr=False)
     transmission_efficiency: np.ndarray = field(init=False, repr=False)
     incident_reference: complex = field(init=False)
+    object_coefficients: np.ndarray = field(init=False, repr=False)
 
     def __post_init__(self):
         c = self.configuration
@@ -74,9 +76,10 @@ class IdealAmplitudeGrating2D:
         beta, kinds = _exterior_branch(c.n_output, np.hypot(kx, ky)/k0)
         beta0 = np.sqrt((k0*c.n_incident)**2-c.kx_incident**2-c.ky_incident**2)
         reference = np.exp(1j*beta0*c.thickness)
-        coefficients = reference*_aperture_coefficients(c, orders)
+        object_coefficients = _aperture_coefficients(c, orders)
+        coefficients = object_coefficients*np.exp(1j*k0*beta*c.thickness)
         values = dict(orders=orders, kx=kx, ky=ky, beta_output=k0*beta, output_kinds=kinds,
-                      transmission=coefficients, incident_reference=reference,
+                      transmission=coefficients, incident_reference=reference, object_coefficients=object_coefficients,
                       transmission_efficiency=np.where(kinds == 'propagating',
                                                        k0*beta.real/beta0*abs(coefficients)**2, 0.))
         for name, value in values.items():
@@ -84,21 +87,29 @@ class IdealAmplitudeGrating2D:
                 value.setflags(write=False)
             object.__setattr__(self, name, value)
 
-    def exact_exit_field(self, x_samples, y_samples):
-        """Unsummed binary boundary prescription, shape (ny,nx)."""
+    def exact_object_field(self, x_samples, y_samples):
+        """Unsummed binary prescription at z_obj=0, shape (ny,nx)."""
         c = self.configuration
         x, y = _samples(x_samples, 'x'), _samples(y_samples, 'y')
         wx = np.remainder(x/c.period_x+.5, 1.)-.5
         wy = np.remainder(y/c.period_y+.5, 1.)-.5
         mask = ((wy[:, None] >= -c.fill_y/2) & (wy[:, None] < c.fill_y/2)
                 & (wx[None, :] >= -c.fill_x/2) & (wx[None, :] < c.fill_x/2))
-        return mask*self.incident_reference*np.exp(1j*(c.kx_incident*x[None, :]+c.ky_incident*y[:, None]))
+        return mask*np.exp(1j*(c.kx_incident*x[None, :]+c.ky_incident*y[:, None]))
+
+    def exact_exit_field(self, x_samples, y_samples):
+        """Compatibility name: retained propagated field at the physical exit.
+
+        The exact sharp boundary is exact_object_field at z=0. This exit
+        reconstruction is finite-order, as are the other propagated fields.
+        """
+        return self.reconstruct(x_samples,y_samples,[-self.configuration.thickness])[0]
 
     def harmonics(self, z_samples):
         z = _samples(z_samples, 'z_samples')
-        if np.any(z > -self.configuration.thickness):
-            raise ValueError('The ideal exit prescription propagates only at or below z=-thickness.')
-        return self.transmission*np.exp(-1j*(z[:, None]+self.configuration.thickness)*self.beta_output)
+        if np.any(z > 0):
+            raise ValueError('The ideal object-plane prescription propagates only at z<=0.')
+        return self.object_coefficients*np.exp(-1j*z[:,None]*self.beta_output)
 
     def reconstruct(self, x_samples, y_samples, z_samples):
         return _reconstruct(self.harmonics(z_samples), self.kx, self.ky,
