@@ -78,7 +78,7 @@ The independent ideal-mask coefficient exercise has no material-solver cutoff.
 ## Notebook 0.7
 
 - [0_7_01_ideal_mask_coefficients.py](chapter_0/0_7_01_ideal_mask_coefficients.py) — Integrate ideal binary-mask Fourier coefficients.
-- [0_7_02_common_phase_reference.py](chapter_0/0_7_02_common_phase_reference.py) — Compare physical and ideal masks with one exit-phase reference.
+- [0_7_02_common_phase_reference.py](chapter_0/0_7_02_common_phase_reference.py) — Compare the physical exit field with a thin mask propagated from z=0.
 - [0_7_03_absorber_thickness_scan.py](chapter_0/0_7_03_absorber_thickness_scan.py) — Test whether greater absorber thickness approaches an ideal mask.
 - [0_7_04_compare_at_common_depth.py](chapter_0/0_7_04_compare_at_common_depth.py) — Propagate physical and ideal coefficients to the same observation plane.
 
@@ -305,3 +305,11 @@ The independent ideal-mask coefficient exercise has no material-solver cutoff.
 - [9_2_02_aliasing_collision.py](chapter_9/9_2_02_aliasing_collision.py) — Demonstrate that a perfect FFT roundtrip can hide an aliased field.
 - [9_2_03_multiple_period_windows.py](chapter_9/9_2_03_multiple_period_windows.py) — Track FFT-bin changes when the window contains several periods.
 - [9_2_04_two_dimensional_fft_coefficients.py](chapter_9/9_2_04_two_dimensional_fft_coefficients.py) — Recover a two-dimensional complex order lattice with FFT2.
+
+<a id="notebook-9-3"></a>
+## Notebook 9.3
+
+- [9_3_01_thin_mask_at_object_plane.py](chapter_9/9_3_01_thin_mask_at_object_plane.py) — Prescribe the thin field at the object plane and compare its propagating projection.
+- [9_3_02_thick_exit_to_object_plane.py](chapter_9/9_3_02_thick_exit_to_object_plane.py) — Bring the thick exit field back to the object plane.
+- [9_3_03_compare_complex_orders.py](chapter_9/9_3_03_compare_complex_orders.py) — Compare complex thin and thick coefficients at the object plane.
+- [9_3_04_common_observation_plane.py](chapter_9/9_3_04_common_observation_plane.py) — Propagate both predictions to a common observation plane and verify the thick replay.

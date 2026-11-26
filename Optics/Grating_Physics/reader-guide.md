@@ -23,6 +23,8 @@ Worked-example code provides another way to examine the reasoning. Reproduce the
 
 ## Running the interactive examples
 
+The [browser Python edition](https://ahariharan-hub.github.io/grating-physics-book/pyodide/) runs calculations on your computer and loads its Python libraries from the book's website. The [Binder edition](https://ahariharan-hub.github.io/grating-physics-book/) runs calculations in a remote Python session. Choose the browser edition when external computation servers are unavailable. Both editions offer the same lessons and controls.
+
 Text, equations and built figures are readable without a live Python session. To activate the examples on a lesson page:
 
 1. Select the power button to connect to a Binder-backed Python session. No local Python installation is required.

@@ -17,7 +17,7 @@ Explore scalar grating diffraction, from optical fields and diffraction orders t
 
 ## About this book
 
-Scalar theory of grating diffraction explores how optical fields interact with apertures and periodic structures. The 51 notebooks span Chapters 0–9, a closing synthesis and five appendices, connecting physical intuition with mathematical descriptions and numerical experiments.
+Scalar theory of grating diffraction explores how optical fields interact with apertures and periodic structures. The 52 notebooks span Chapters 0–9, a closing synthesis and five appendices, connecting physical intuition with mathematical descriptions and numerical experiments.
 
 The sequence develops scalar wave fields and diffraction orders, then explores evanescent waves, three-dimensional geometry, intensity, interference and field propagation. Numerical grating experiments bring these ideas together, and the closing synthesis connects diffraction to imaging.
 
@@ -26,6 +26,8 @@ Read the explanations and figures at your own pace, or activate the Python examp
 [Meet the author and read about the approach in the Preface](preface.md). For navigation, exercises and live examples, see the [Reader's Guide](reader-guide.md).
 
 ## Explore the book
+
+**Choose how Python runs:** the [browser Python edition](https://ahariharan-hub.github.io/grating-physics-book/pyodide/) performs calculations on your computer. The [Binder edition](https://ahariharan-hub.github.io/grating-physics-book/) uses a remote Python session. Both editions contain the same lessons and require no Python installation.
 
 Begin with Chapter 0 for a conceptual introduction, then follow the chapters in order or use the sidebar to revisit a topic. Each chapter link below opens its overview or first lesson.
 
@@ -56,7 +58,7 @@ Begin with Chapter 0 for a conceptual introduction, then follow the chapters in 
 ### Propagation and numerical experiments
 
 - [Chapter 8 · Scalar field propagation](8_0_Introduction_to_Field_Propagation.ipynb) — Physical pictures, Rayleigh–Sommerfeld propagation, angular spectra and Fresnel/Fraunhofer approximations.
-- [Chapter 9 · Complex exit fields and numerical experiments](9_0_From_a_Physical_Model_to_a_Numerical_Experiment.ipynb) — Defining and sampling complex exit fields and their spectra.
+- [Chapter 9 · Complex exit fields and numerical experiments](9_0_From_a_Physical_Model_to_a_Numerical_Experiment.ipynb) — Defining and sampling complex exit fields, then comparing thin and thick masks.
 - [Closing synthesis · From diffraction to imaging](Closing_0_From_Diffraction_to_Imaging.ipynb) — Bring the field and diffraction viewpoints together and connect them to imaging.
 :::
 ::::

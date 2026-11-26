@@ -122,7 +122,7 @@ def slit_far_field(x_mm, width_um=20, wavelength_um=.6, distance_mm=1000):
     omitted. ``relative_intensity`` is normalized by this slit's own central
     intensity. It therefore does not retain the width-squared peak scaling.
 
-    NumPy sinc(s)=sin(pi*s)/(pi*s). ``fresnel_number`` uses the full width a:
+    NumPy sinc(s)=sin(pi*s)/(pi*s). ``fresnel_number`` uses the full opening width W_open:
     a²/(lambda*L), after converting L from millimetres to micrometres. These
     formulas do not establish the approximation's validity at arbitrary inputs.
     """

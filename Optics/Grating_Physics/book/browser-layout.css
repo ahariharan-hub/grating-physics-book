@@ -1,0 +1,157 @@
+/* Browser edition: leave the right margin available to interactive figures. */
+article.article > div:has(> .myst-outline-section) {
+  grid-column: body;
+  position: static !important;
+  height: auto !important;
+  margin: 0 0 1.5rem !important;
+  padding: 0 !important;
+}
+.myst-outline-section {
+  max-inline-size: 78ch;
+  border: 1px solid var(--textbook-rule);
+  border-radius: .3rem;
+}
+.myst-outline-section .myst-outline {
+  position: static !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: .75rem 1rem;
+}
+.myst-outline-section .myst-outline-header { margin-bottom: .5rem; }
+.myst-outline-section[data-state='closed'] .myst-outline-header { margin-bottom: 0; }
+@media (min-width: 768px) {
+  .myst-outline-list { columns: 2; column-gap: 1.5rem; }
+  .myst-outline-item { break-inside: avoid; }
+}
+
+/* Retain the theme's named grid lines for equations, margins and navigation. */
+@media (min-width: 1024px) {
+  .article-grid, .myst-primary-sidebar {
+    --browser-navigation-width: 0rem;
+    --browser-navigation-gap: 0rem;
+    grid-template-columns:
+      [screen-start screen-inset-start page-start] 1rem
+      [page-inset-start] var(--browser-navigation-width)
+      [body-outset-start] var(--browser-navigation-gap)
+      [body-start gutter-left-start] 1rem
+      [body-inset-start] minmax(0, 1fr)
+      [middle-start] minmax(0, 1fr)
+      [gutter-left-end] minmax(0, 1fr) minmax(0, 1fr)
+      [gutter-right-start] minmax(0, 1fr)
+      [middle-end] minmax(0, 1fr)
+      [body-inset-end] 1rem
+      [body-end gutter-right-end body-outset-end page-inset-end page-end] 1rem
+      [screen-inset-end screen-end];
+  }
+}
+@media (min-width: 1280px) {
+  .article-grid, .myst-primary-sidebar {
+    --browser-navigation-width: 13rem;
+    --browser-navigation-gap: 1rem;
+  }
+}
+
+/* Text and notebook outputs share the full available article width. */
+.article p { max-inline-size: none; }
+.article :is(.col-margin, .col-margin-right, .col-margin-right-inset) { grid-column: body; }
+.article .myst-jp-nb-block,
+.article .jp-OutputArea,
+.article .jp-OutputArea-child,
+.article .jp-OutputArea-output {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.article .jp-OutputArea-output {
+  overflow-x: auto;
+}
+.article .jp-OutputArea-output > .jupyter-widgets {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+/* Notebook prose uses a reading column; executable cells and GUIs stay wide.
+   The theme emits a direct spinner child for every notebook-code block,
+   including cells with hidden inputs and cells displaying saved outputs. */
+article.article:has(.myst-jp-nb-block[id]) {
+  --book-reading-width: 56rem;
+  --book-reading-inset: 0rem;
+}
+article.article:has(.myst-jp-nb-block[id]) .myst-fm-block-title,
+article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id]:not(:has(> .myst-jp-nb-block-spinner)) {
+  inline-size: calc(100% - var(--book-reading-inset));
+  max-inline-size: var(--book-reading-width);
+  margin-inline: var(--book-reading-inset) 0;
+  justify-self: start;
+  box-sizing: border-box;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id]:not(:has(> .myst-jp-nb-block-spinner)) {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+article.article:has(.myst-jp-nb-block[id]) .myst-outline-section {
+  inline-size: calc(100% - var(--book-reading-inset));
+  max-inline-size: var(--book-reading-width);
+  margin-inline: var(--book-reading-inset) 0;
+  font-family: system-ui, sans-serif;
+  font-size: .9rem;
+}
+article.article:has(.myst-jp-nb-block[id]) .myst-fm-block {
+  margin-bottom: .75rem;
+}
+article.article:has(.myst-jp-nb-block[id]) > div:has(> .myst-outline-section) {
+  margin-block: .5rem 1rem !important;
+}
+article.article:has(.myst-jp-nb-block[id]):not(:has(.myst-jp-nb-block > .myst-jp-nb-block-spinner)) .myst-jp-nb-toolbar {
+  display: none;
+}
+/* The generated initialization cell precedes Markdown's repeated page title. */
+article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id^='browser-init-'] > details {
+  display: none;
+}
+article.article:has(.myst-fm-block-title) .myst-jp-nb-block[id] > h1 {
+  visibility: hidden;
+  block-size: 0;
+  margin: 0;
+  padding: 0;
+}
+article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id]:not(:has(> .myst-jp-nb-block-spinner)) :is(h2, h3) {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 600;
+  line-height: 1.35;
+}
+article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id]:not(:has(> .myst-jp-nb-block-spinner)) h2 {
+  border-bottom: 0;
+  padding-bottom: 0;
+  margin-top: 2.4rem;
+  font-size: 1.4rem;
+}
+article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id]:not(:has(> .myst-jp-nb-block-spinner)) p {
+  margin-block: .9em;
+  text-wrap: pretty;
+  hyphens: auto;
+}
+article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id]:not(:has(> .myst-jp-nb-block-spinner)) table {
+  font-size: .95rem;
+  line-height: 1.55;
+}
+@media (min-width: 768px) {
+  article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id]:not(:has(> .myst-jp-nb-block-spinner)) p { text-align: justify; }
+}
+@media (min-width: 1280px) {
+  article.article:has(.myst-jp-nb-block[id]) { --book-reading-inset: 2rem; }
+}
+@media (max-width: 767px) {
+  article.article:has(.myst-jp-nb-block[id]) .myst-jp-nb-block[id]:not(:has(> .myst-jp-nb-block-spinner)) { font-size: 1rem; }
+  .myst-home-link { min-inline-size: 0; max-inline-size: calc(100vw - 11rem); }
+  .myst-home-link > span {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+@media print {
+  article.article > div:has(> .myst-outline-section) { display: none; }
+}

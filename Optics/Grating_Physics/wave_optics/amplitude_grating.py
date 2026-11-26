@@ -1,6 +1,6 @@
-"""Ideal exit-plane aperture and physical absorber at one absolute phase reference."""
+"""Ideal aperture at z=0, propagated to the physical absorber output planes."""
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 
 import numpy as np
 
@@ -36,52 +36,77 @@ def field_fourier_coefficients(field, x_samples, period, orders):
     return np.fft.fft(u)[m % x.size]/x.size * np.exp(-2j*np.pi*m*x[0]/p)
 
 
-def ideal_amplitude_coefficients(configuration, orders=None):
-    """Exit coefficients: exp(i k0 h) D sinc(mD) exp(-i 2pi m x0/p).
-
-    The aperture's transmission coefficients alone omit exp(i k0 h). This
-    factor propagates the shared U_i(0)=1 illumination through air to z=-h.
-    No phase fitting or power renormalization is applied.
-    """
+def ideal_amplitude_transmission(configuration, orders=None):
+    """Binary transmission coefficients at z_obj=0, including opening shift."""
     if not isinstance(configuration, AbsorbingGratingConfiguration):
         raise TypeError('configuration must be an AbsorbingGratingConfiguration.')
-    c = configuration
-    m = np.arange(-c.M, c.M+1) if orders is None else np.asarray(orders)
-    coefficients = binary_transmission_coefficients(m, c.open_fraction, 1., 0.)
-    return coefficients*np.exp(2j*np.pi*c.thickness/c.wavelength-2j*np.pi*m*c.opening_shift/c.period)
+    c=configuration
+    m=np.arange(-c.M,c.M+1) if orders is None else np.asarray(orders)
+    coefficients=binary_transmission_coefficients(m,c.open_fraction,1.,0.)
+    return coefficients*np.exp(-2j*np.pi*m*c.opening_shift/c.period)
+
+
+def ideal_amplitude_coefficients(configuration, orders=None):
+    """Ideal coefficients at z=-h: t_m exp(i beta_m h), from a mask at z=0."""
+    c=configuration
+    tm=ideal_amplitude_transmission(c,orders)
+    m=np.arange(-c.M,c.M+1) if orders is None else np.asarray(orders)
+    beta,_=_exterior_branch(1.,m*c.wavelength/c.period)
+    return tm*np.exp(1j*(2*np.pi/c.wavelength)*beta*c.thickness)
+
+
+def ideal_amplitude_object_field(configuration, x_samples):
+    """Exact binary boundary at z_obj=0 under unit normal incidence."""
+    if not isinstance(configuration, AbsorbingGratingConfiguration):
+        raise TypeError('configuration must be an AbsorbingGratingConfiguration.')
+    c=configuration
+    return binary_transmission_field(_samples(x_samples,'x_samples')-c.opening_shift,
+                                    c.period,c.open_fraction,1.,0.)
 
 
 def ideal_amplitude_exit_field(configuration, x_samples):
-    """Exact prescribed exit field, as distinct from its finite Fourier sum."""
-    if not isinstance(configuration, AbsorbingGratingConfiguration):
-        raise TypeError('configuration must be an AbsorbingGratingConfiguration.')
-    c = configuration
-    return binary_transmission_field(_samples(x_samples, 'x_samples')-c.opening_shift,
-        c.period, c.open_fraction, np.exp(2j*np.pi*c.thickness/c.wavelength), 0.)
+    """Retained outgoing field at z=-h, after propagating the boundary from z=0."""
+    model=IdealAmplitudeGrating(configuration)
+    return model.reconstruct(x_samples,[-model.configuration.thickness])[0]
 
 
 @dataclass(frozen=True)
 class IdealAmplitudeGrating(ThinPhaseGrating):
-    """Reuse homogeneous propagation/field sums, with an amplitude-mask input.
+    """Binary mask at z_obj=0; transmission remains referenced to physical z=-h.
 
-    Inherited methods propagate only z<=-h. No reflection or absorption is
-    predicted by this ideal boundary prescription.
+    The inherited field interface is retained for common-plane comparisons.
+    Propagation is valid for all z<=0, with evanescent terms decaying downward.
+    No reflected field or material absorption is predicted by this prescription.
     """
-
     configuration: AbsorbingGratingConfiguration
+    object_coefficients: np.ndarray = field(init=False)
 
     def __post_init__(self):
-        c = self.configuration
-        coefficients = ideal_amplitude_coefficients(c)
-        m = np.arange(-c.M, c.M+1)
-        k0 = 2*np.pi/c.wavelength
-        alpha = m*c.wavelength/c.period
-        beta, kinds = _exterior_branch(1., alpha)
-        for name, value in dict(orders=m, kx=k0*alpha, beta_output=k0*beta, output_kinds=kinds,
-            transmission=coefficients,
-            transmission_efficiency=np.where(kinds == 'propagating', beta.real*abs(coefficients)**2, 0.)).items():
+        if not isinstance(self.configuration,AbsorbingGratingConfiguration):
+            raise TypeError('configuration must be an AbsorbingGratingConfiguration.')
+        c=self.configuration
+        m=np.arange(-c.M,c.M+1)
+        tm=ideal_amplitude_transmission(c,m)
+        k0=2*np.pi/c.wavelength
+        beta,kinds=_exterior_branch(1.,m*c.wavelength/c.period)
+        beta=k0*beta
+        coefficients=tm*np.exp(1j*beta*c.thickness)
+        for name,value in dict(orders=m,kx=2*np.pi*m/c.period,beta_output=beta,
+            output_kinds=kinds,object_coefficients=tm,transmission=coefficients,
+            transmission_efficiency=np.where(kinds=='propagating',beta.real/k0*abs(coefficients)**2,0.)).items():
             value.setflags(write=False)
-            object.__setattr__(self, name, value)
+            object.__setattr__(self,name,value)
+
+    def harmonics(self,z_samples):
+        """C_m(z)=t_m exp(-i beta_m z) below the chosen thin-mask plane z=0."""
+        z=_samples(z_samples,'z_samples')
+        if np.any(z>0):
+            raise ValueError('Thin-mask output planes must satisfy z <= 0.')
+        with np.errstate(over='raise',invalid='raise'):
+            values=self.object_coefficients*np.exp(-1j*z[:,None]*self.beta_output)
+        if not np.isfinite(values).all():
+            raise ValueError('Nonfinite propagated ideal coefficients.')
+        return values
 
 
 class AbsorbingComparisonData:

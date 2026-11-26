@@ -329,7 +329,7 @@ class ScalarGratingExplorer:
         if self.stage == 'geometry':
             if model.is_absorbing:
                 self.readout.value = (f'λ₀ = {c.wavelength:g} µm; d = {c.period:g} µm; h = {c.thickness:g} µm; '
-                    f'clear width CD = {c.clear_width:g} µm; open fraction D_open = {c.open_fraction:g}. '
+                    f'opening width W<sub>open</sub> = {c.clear_width:g} µm; open fraction D_open = {c.open_fraction:g}. '
                     f'Absorbing ridges: n + iκ = {c.n_absorber:g} + {c.kappa:g}i. '
                     'Centred clear openings and both exterior regions: air (n=1, κ=0). '
                     'Unit incident amplitude; normal incidence toward −z. Illustrative absorber, no substrate.')

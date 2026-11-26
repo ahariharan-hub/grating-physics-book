@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """0.7, worked example 4: Propagate physical and ideal coefficients to the same observation plane.
 
-Companion topic: Complex coefficients and the next physical model.
+Companion topic: Compare at a common observation plane.
 Vacuum wavelength and lengths um. Normal-incidence scalar/TE model; air exteriors; outgoing -z; illustrative n+i*kappa.
 Run the entire file in Python or Spyder, or execute its # %% sections in order.
 Change INPUT PARAMETERS to investigate the result. No figures are saved automatically.
@@ -35,9 +35,9 @@ configuration = AbsorbingGratingConfiguration(
 solution = solve_absorbing_grating(configuration)
 
 # %% NUMERICAL CALCULATION
-reference = np.exp(2j * np.pi * thickness / wavelength)
-physical_exit = solution.transmission / reference
-ideal_exit = opening_width / period * np.sinc(solution.orders * opening_width / period)
+physical_exit = solution.transmission
+t_m = opening_width / period * np.sinc(solution.orders * opening_width / period)
+ideal_exit = t_m * np.exp(1j * solution.beta_output * thickness)
 propagators = np.exp(1j * depths[:, None] * solution.beta_output)
 differences = abs((physical_exit - ideal_exit)[None, :] * propagators)
 propagating = solution.output_kinds == 'propagating'

@@ -35,15 +35,18 @@ base = AbsorbingGratingConfiguration(wavelength=wavelength, period=period,
     clear_width=opening_width, n_absorber=absorber_index, kappa=extinction, M=M)
 ideal_coefficient = opening_width / period * np.sinc(selected_order * opening_width / period)
 physical_coefficients = []
+ideal_coefficients = []
 
 # %% NUMERICAL CALCULATION
 for height in thicknesses:
     trial = solve_absorbing_grating(replace(base, thickness=float(height)))
     coefficient = trial.transmission[trial.orders == selected_order][0]
-    reference = np.exp(2j * np.pi * height / wavelength)
-    physical_coefficients.append(coefficient / reference)
+    beta_m = trial.beta_output[trial.orders == selected_order][0]
+    physical_coefficients.append(coefficient)
+    ideal_coefficients.append(ideal_coefficient * np.exp(1j * beta_m * height))
 physical_coefficients = np.array(physical_coefficients)
-differences = abs(physical_coefficients - ideal_coefficient)
+ideal_coefficients = np.array(ideal_coefficients)
+differences = abs(physical_coefficients - ideal_coefficients)
 
 # %% CHECK AND INTERPRET
 assert np.all(np.isfinite(differences))

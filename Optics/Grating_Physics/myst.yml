@@ -135,6 +135,8 @@ project:
       title: 9.1 Defining the complex exit field
     - file: 9_2_Sampling_Complex_Fields_and_Their_Spectra.ipynb
       title: 9.2 Sampling fields and spectra
+    - file: 9_3_Thin_and_Thick_Mask_Exit_Field_Comparison.ipynb
+      title: 9.3 Thin and thick mask exit-field comparison
   - title: Closing synthesis
     children:
     - file: Closing_0_From_Diffraction_to_Imaging.ipynb

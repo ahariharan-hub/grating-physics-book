@@ -58,7 +58,7 @@ class ScalarPropagationExplorer:
             self.wavelength = slider('Wavelength λ (µm)', .6, .4,
                                      .8 if stage == 'slit' else 1, .025, '.3f')
         if stage in ('spectrum', 'slit'):
-            self.width = slider('Slit width a (µm)', 20, 10, 40, 1, '.0f')
+            self.width = slider('Slit width W_open (µm)', 20, 10, 40, 1, '.0f')
         if stage == 'spectrum':
             self.keep_phase = widgets.Checkbox(value=True,
                 description='Keep spectrum phase', indent=False,
@@ -424,7 +424,7 @@ def slit_setup_png():
     scene.set(xlim=(-280, 1000), ylim=(-80, 80), xlabel='z (µm) →', ylabel='x (µm)',
               title='Incident wave → slit → known field → homogeneous propagation')
     scene.text(-145, -65, 'Crests\n(schematic)', ha='center', fontsize=9, color=BLUE)
-    scene.annotate('a = 20 µm', xy=(0, 0), xytext=(150, 55), color='white', fontsize=9,
+    scene.annotate(r'$W_{\mathrm{open}}$ = 20 µm', xy=(0, 0), xytext=(150, 55), color='white', fontsize=9,
                    arrowprops=dict(arrowstyle='->', color='white'))
     scene.text(650, -67, 'Calculated intensity', color='white', fontsize=9)
     detector.plot(data['x_um'], data['intensity'][-1], color=INK, lw=2)

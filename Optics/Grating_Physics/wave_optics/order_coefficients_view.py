@@ -116,19 +116,18 @@ class OrderCoefficientExplorer:
 
 
 def coefficient_comparison_figure(solution):
-    """Compare at the same exit plane and incident phase; remove trivial air carrier."""
+    """Compare raw exit coefficients; both models have unit incident phase at z=0."""
     c = solution.configuration
     orders = np.arange(-4, 5)
     index = np.array([np.flatnonzero(solution.orders == m)[0] for m in orders])
     k = 2*np.pi/c.wavelength
     physical = solution.at_reference_plane(-c.thickness)[index]
-    # Incident amplitude is 1 at z=0; ideal mask at z=-h sees exp(i*k*h).
-    # Removing that common carrier sets incident phase zero at the exit in both models.
-    physical = physical*np.exp(-1j*k*c.thickness)
-    ideal = c.open_fraction*np.sinc(orders*c.open_fraction)
+    from .amplitude_grating import IdealAmplitudeGrating
+    # The ideal binary field starts at z=0 and is propagated to the physical exit.
+    ideal=IdealAmplitudeGrating(c).transmission[index]
     fig = Figure(figsize=(10, 5.5), layout='constrained')
     axes = fig.subplots(2, 2)
-    for values, label, color, marker in [(ideal, 'Ideal exit mask', BLUE, 'o'), (physical, 'Physical scalar absorber', ORANGE, 's')]:
+    for values, label, color, marker in [(ideal, 'Ideal mask propagated from z=0', BLUE, 'o'), (physical, 'Physical scalar absorber', ORANGE, 's')]:
         axes[0, 0].plot(orders, abs(values), marker+'-', color=color, label=label)
         valid = abs(values)>1e-6
         axes[0, 1].plot(orders[valid], np.angle(np.asarray(values, complex)[valid]), marker, color=color, label=label)
@@ -138,7 +137,7 @@ def coefficient_comparison_figure(solution):
     for duty in (.3, .5, .7):
         axes[1, 0].plot(orders, duty*np.sinc(orders*duty), 'o-', label=f'D_open={duty:.1f}')
     axes[1, 0].axhline(0,color='0.7',lw=.7)
-    axes[1, 0].set(title='Ideal mask: signs change with open fraction', xlabel='Order m', ylabel='Signed C_m')
+    axes[1, 0].set(title='Object-plane ideal mask: signed coefficients', xlabel='Order m', ylabel='Signed C_m')
     axes[1, 0].legend(fontsize=8)
     # Collection is geometry; marker area conveys coefficient magnitude, not power.
     na = .6

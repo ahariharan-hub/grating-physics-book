@@ -97,7 +97,7 @@ class ScalarTheoryExplorer:
         if stage == 'boundary':
             self.fraction = slider('Backward fraction b', 0, 0, 1, .05, '.2f')
         if stage == 'diffraction':
-            self.width = slider('Slit width a (µm)', 20, 10, 40, 1, '.0f')
+            self.width = slider('Slit width W_open (µm)', 20, 10, 40, 1, '.0f')
         self._controls = tuple(controls)
         self._defaults = tuple((control, control.value) for control in controls)
         self.reset_button = widgets.Button(description='Reset this example',
@@ -619,7 +619,7 @@ class ScalarTheoryExplorer:
         aperture.fill_between([-width/2, width/2], 0, 1, color=BLUE, alpha=.12)
         aperture.annotate('', xy=(width/2, 1.15), xytext=(-width/2, 1.15),
                           arrowprops=dict(arrowstyle='<->', color=PURPLE, lw=1.5))
-        aperture.text(0, 1.21, f'a = {width:.0f} µm', ha='center', fontsize=10, color=PURPLE)
+        aperture.text(0, 1.21, rf'$W_{{\mathrm{{open}}}}$ = {width:.0f} µm', ha='center', fontsize=10, color=PURPLE)
         aperture.set(xlim=(-30, 30), ylim=(-.08, 1.42), xlabel='Aperture x (µm)',
                      ylabel='U(x,0) = t(x), unit incident amplitude', title='1. Prescribe the slit field\nz = 0')
         near = self._cache.get('slit_propagation', (width, wavelength),
@@ -647,7 +647,7 @@ class ScalarTheoryExplorer:
         bar = self.figure.add_axes([.395, .12, .23, .025])
         self.figure.colorbar(picture, cax=bar, orientation='horizontal', ticks=[0, .25, 1, 2],
                             label='|U|² / incident intensity')
-        self.readout.value = (f'λ = {wavelength:.3f} µm; a = {width:.0f} µm. '
+        self.readout.value = (f'λ = {wavelength:.3f} µm; W<sub>open</sub> = {width:.0f} µm. '
             f'<b>Detector first zeros: X = ±{zero:.2f} mm.</b><br>'
             'The middle map stops at 1 mm; the detector is much farther away, at 1000 mm. '
             'Map brightness uses a fixed incident-intensity reference; the detector curve uses its own central peak. '
