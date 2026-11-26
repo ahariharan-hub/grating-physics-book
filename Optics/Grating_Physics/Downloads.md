@@ -26,8 +26,8 @@ The numerical-explorer collection has 16 interactive programs. Its chapter files
 | 8 | `8_field_propagation.py` | Scalar propagation kernels and Fourier components |
 
 The numerical chapter explorers provide 36 numbered setups linked to subnotebooks
-0.1–8.3. The scripts collection instead provides **140 worked examples**, four for
-each teaching notebook from **0.1 through 9.2**, plus seven specialist solver scripts.
+0.1–8.3. The scripts collection instead provides **144 worked examples**, four for
+each teaching notebook from **0.1 through 9.3**, plus seven specialist solver scripts.
 It is organized by chapter, with filenames identifying notebook and example:
 
 ```text
