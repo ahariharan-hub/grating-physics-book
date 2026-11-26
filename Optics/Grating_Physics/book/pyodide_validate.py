@@ -41,6 +41,7 @@ def summarize(stage):
     """Collect matching individual receipts, including targeted reruns."""
     stage = Path(stage)
     result_dir = stage.parent / 'wasm-validation'
+    result_dir.mkdir(parents=True, exist_ok=True)
     names = json.loads((stage.parent / 'profile.json').read_text(encoding='utf-8'))['notebooks']
     records = []
     for name in names:

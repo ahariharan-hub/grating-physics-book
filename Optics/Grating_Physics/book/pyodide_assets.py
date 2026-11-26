@@ -408,6 +408,19 @@ def preserve_restart_session(text):
     return text, counts
 
 
+def disable_contents_serviceworker(text):
+    """Use ordinary Pyodide memory files without the optional contents bridge.
+
+    The bridge registers a root-scoped service worker and heartbeat, although
+    this static book has no Jupyter contents server. Its optional consumers
+    already support an unavailable service; kernel Web Workers are unaffected.
+    """
+    needle = ('id:"@jupyterlite/server-extension:service-worker",autoStart:!0,'
+              'provides:P.u,activate:e=>new B.J')
+    replacement = needle.replace('activate:e=>new B.J', 'activate:e=>null')
+    return text.replace(needle, replacement), text.count(needle)
+
+
 def package_site(html, base_url=''):
     """Adapt derived theme assets only; retain guards against upstream changes."""
     html = Path(html)
@@ -431,6 +444,7 @@ def package_site(html, base_url=''):
     reading_outlines = 0
     individual_cell_initializers = 0
     restart_session_guards = {'kernel_restart': 0, 'session_rebind': 0}
+    disabled_contents_workers = 0
     changes = []
     for path in [*html.glob('*.js'), *(html / '_assets').glob('*.js')]:
         original = path.read_text(encoding='utf-8')
@@ -454,6 +468,8 @@ def package_site(html, base_url=''):
         text, restart_guards = preserve_restart_session(text)
         for name, count in restart_guards.items():
             restart_session_guards[name] += count
+        text, disabled_workers = disable_contents_serviceworker(text)
+        disabled_contents_workers += disabled_workers
         # Thebe's defaults otherwise permit PyPI fallback for the kernel itself.
         needle = f'pipliteUrls:["{base_url}/pypi/all.json"],pipliteWheelUrl:'
         text = text.replace(needle, needle.replace('],pipliteWheelUrl:', '],disablePyPIFallback:!0,pipliteWheelUrl:'))
@@ -476,6 +492,8 @@ def package_site(html, base_url=''):
         raise RuntimeError('Review changed theme individual-cell initialization before building the book.')
     if any(count != 1 for count in restart_session_guards.values()):
         raise RuntimeError('Review changed JupyterLite kernel/session restart lifecycle.')
+    if disabled_contents_workers != 1:
+        raise RuntimeError('Review changed JupyterLite optional contents service-worker plugin.')
     meta = '<meta http-equiv="Content-Security-Policy" content="' + escape(content_policy(), quote=True) + '">'
     for path in html.rglob('*.html'):
         text = path.read_text(encoding='utf-8')
@@ -491,6 +509,7 @@ def package_site(html, base_url=''):
                   reading_outlines=reading_outlines,
                   individual_cell_initializers=individual_cell_initializers,
                   restart_session_guards=restart_session_guards,
+                  disabled_contents_workers=disabled_contents_workers,
                   filesystem='Pyodide memory filesystem; JupyterLite contents mount disabled',
                   remote_requests='blocked by Content-Security-Policy; live validation still required')
     (html.parent.parent / 'same-site-build.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')

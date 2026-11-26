@@ -139,6 +139,10 @@ They pin the local `anywidget` renderer, restore Plotly's positioning styles,
 skip Plotly resizes after a static preview is removed, and disable JupyterLite
 contents-drive synchronization. The book loads its
 Python helpers and runtime assets into Pyodide's ordinary memory filesystem.
+The optional JupyterLite contents service worker is unavailable in this edition;
+the static book has no contents server. This prevents registration and heartbeat
+requests at the domain root when the book is hosted under a Pages subdirectory.
+Python's kernel Web Workers remain enabled.
 Early cell execution requests wait for an attached Python session instead of
 returning while the notebook remains busy. A failed attachment has a bounded
 two-minute wait and reports an error.
